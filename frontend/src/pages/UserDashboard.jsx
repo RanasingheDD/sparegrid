@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom'
 import ConfirmModal from '../components/ConfirmModal'
 
 const EMPTY_FORM = { title: '', description: '', price: '', category: 'TV', images: [], stock_count: 1, condition: 'Used', model_number: '' }
+const SERVICE_CHARGE = 200
+const isAdminAcceptedOrder = (status) => status && !['pending_admin', 'rejected'].includes(status)
 
 export default function UserDashboard() {
   const { user, refreshUser } = useAuth()
@@ -95,7 +97,7 @@ export default function UserDashboard() {
       const payload = {
         ...form,
         images: sanitizedImages,
-        price: parseFloat(form.price)
+        price: editingId ? parseFloat(form.price) : parseFloat(form.price) + SERVICE_CHARGE
       }
 
       if (editingId) {
@@ -103,7 +105,7 @@ export default function UserDashboard() {
         toast.success('✏️ Listing updated successfully.')
       } else {
         await productsAPI.create(payload)
-        toast.success('🎉 Your listing has been submitted! It will appear on the marketplace after admin review — usually within 24 hours.')
+        toast.success(`🎉 Your listing has been submitted with a LKR ${SERVICE_CHARGE} service charge added. It will appear on the marketplace after admin review — usually within 24 hours.`)
       }
       setEditingId(null)
       setForm(EMPTY_FORM)
@@ -199,6 +201,9 @@ export default function UserDashboard() {
       setUpdatingPayout(false)
     }
   }
+
+  const enteredPrice = Number(form.price) || 0
+  const finalListingPrice = editingId ? enteredPrice : enteredPrice + SERVICE_CHARGE
 
   return (
     <>
@@ -386,6 +391,18 @@ export default function UserDashboard() {
                     <p className="text-sm font-body text-trust-700 leading-relaxed font-medium">{selectedOrder.shipping_address}</p>
                   </section>
 
+                  {isAdminAcceptedOrder(selectedOrder.delivery_status) && (
+                    <section className="bg-brand-50 border border-brand-100 rounded-3xl p-6">
+                      <h4 className="text-[10px] uppercase font-bold text-brand-600 mb-2 tracking-widest">Delivery Update</h4>
+                      <p className="text-sm font-body text-trust-700 leading-relaxed">
+                        Your order has been accepted by admin. Delivery time is <span className="font-bold text-brand-700">3-5 working days</span>.
+                      </p>
+                      <p className="text-xs font-body text-trust-500 leading-relaxed mt-3">
+                        For any concern, please contact us and our team will assist you.
+                      </p>
+                    </section>
+                  )}
+
                   {(selectedOrder.message || selectedOrder.tracking_notes) && (
                     <section className="bg-brand-50 border border-brand-100 rounded-3xl p-6">
                       {selectedOrder.message && (
@@ -479,6 +496,25 @@ export default function UserDashboard() {
                         </select>
                       </div>
                     </div>
+                    {!editingId && (
+                      <div className="rounded-2xl border border-brand-100 bg-brand-50/60 px-4 py-4">
+                        <p className="text-[10px] uppercase font-bold tracking-widest text-brand-700 mb-3">Listing Price Summary</p>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center justify-between text-trust-600">
+                            <span>Your entered price</span>
+                            <span className="font-mono font-bold text-trust-900">LKR {enteredPrice.toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-trust-600">
+                            <span>Service charge</span>
+                            <span className="font-mono font-bold text-trust-900">LKR {SERVICE_CHARGE.toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center justify-between border-t border-brand-100 pt-2">
+                            <span className="text-[10px] uppercase font-bold tracking-widest text-brand-700">Final listing price</span>
+                            <span className="font-mono text-base font-bold text-brand-700">LKR {finalListingPrice.toLocaleString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <div>
                       <label className="block text-[10px] uppercase font-bold text-trust-400 mb-1.5 font-body tracking-wider">Images (Max 3)</label>
                       <div className="space-y-3">
@@ -586,6 +622,14 @@ export default function UserDashboard() {
                       <span className="text-sm font-bold text-trust-900">LKR {o.product?.price?.toLocaleString()}</span>
                     </div>
                   </div>
+                  {isAdminAcceptedOrder(o.delivery_status) && (
+                    <div className="rounded-2xl border border-brand-100 bg-brand-50/70 p-4 mb-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-brand-600 mb-1">Delivery Time</p>
+                      <p className="text-xs font-body text-trust-700 leading-relaxed">
+                        3-5 working days. For any concern, contact us.
+                      </p>
+                    </div>
+                  )}
                   <div className="flex items-center justify-center gap-1.5 text-[10px] font-bold text-trust-400 uppercase tracking-widest group-hover:text-brand-500 transition-colors">
                     View Details <Plus size={10} className="group-hover:translate-x-0.5 transition-transform" />
                   </div>
