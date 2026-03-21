@@ -39,25 +39,16 @@
 
 @layer components {
   .btn-primary {
-    @apply relative overflow-hidden rounded-2xl bg-brand-500 px-6 py-3 text-sm font-extrabold tracking-[0.01em] text-white
+    @apply relative rounded-2xl bg-gradient-to-r from-brand-600 via-brand-500 to-brand-400 px-6 py-3 text-sm font-extrabold tracking-[0.01em] text-white
            shadow-[0_16px_36px_rgba(242,85,31,0.28)] transition-all duration-300
            hover:-translate-y-0.5 hover:shadow-[0_22px_42px_rgba(242,85,31,0.34)]
            active:translate-y-0 active:scale-[0.97]
            disabled:cursor-not-allowed disabled:opacity-50;
-    isolation: isolate;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.18);
   }
 
-  .btn-primary::before {
-    content: '';
-    @apply absolute inset-0 rounded-2xl bg-gradient-to-r from-brand-400 via-brand-500 to-brand-600 opacity-100 transition-opacity duration-300;
-  }
-
-  .btn-primary:hover::before {
-    @apply opacity-90;
-  }
-
-  .btn-primary > * {
-    @apply relative z-10;
+  .btn-primary:hover {
+    background-image: linear-gradient(to right, #b72f0b, #db3e10, #f2551f);
   }
 
   .btn-ghost {
