@@ -135,7 +135,7 @@ export default function ProductDetail() {
 
           {product.description && (
             <div className="bg-trust-50/50 p-6 rounded-3xl border border-trust-100/50 relative">
-               <p className="text-trust-600 font-body text-sm leading-relaxed">{product.description}</p>
+               <p className="whitespace-pre-wrap break-words text-trust-600 font-body text-sm leading-relaxed">{product.description}</p>
             </div>
           )}
 

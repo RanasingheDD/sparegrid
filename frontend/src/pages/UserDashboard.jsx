@@ -589,6 +589,11 @@ export default function UserDashboard() {
                         </div>
                         <h3 className="font-display font-bold text-trust-900 truncate">{p.title}</h3>
                         <p className="text-brand-600 font-mono font-bold mb-4">LKR {p.price?.toLocaleString()}</p>
+                        {p.description && (
+                          <p className="mb-4 line-clamp-3 whitespace-pre-wrap break-words text-sm leading-relaxed text-trust-500">
+                            {p.description}
+                          </p>
+                        )}
                         <div className="flex gap-2">
                           <button onClick={() => handleEdit(p)} className="flex-1 btn-ghost py-2 text-xs"><Edit size={12} /> Edit</button>
                           <button onClick={() => handleDelete(p.id)} className="px-3 btn-ghost text-red-400 hover:text-red-600"><Trash2 size={16} /></button>
