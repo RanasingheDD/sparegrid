@@ -56,9 +56,9 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <div className="hidden sm:flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3.5 py-2 text-[10px] font-extrabold uppercase tracking-[0.22em] text-brand-700">
+              <div className="hidden sm:flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3.5 py-2 text-sm font-bold text-brand-700">
                 <span className="h-2 w-2 rounded-full bg-brand-500" />
-                {user.role}
+                <span className="max-w-[140px] truncate">{user.name}</span>
               </div>
 
               <Link
