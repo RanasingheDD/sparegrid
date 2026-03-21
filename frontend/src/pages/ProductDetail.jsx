@@ -6,8 +6,6 @@ import StatusBadge from '../components/StatusBadge'
 import toast from 'react-hot-toast'
 import { ArrowLeft, Wrench, Tag, User, Phone, ShieldCheck } from 'lucide-react'
 
-const PLATFORM_SERVICE_FEE = 200
-
 export default function ProductDetail() {
   const { id } = useParams()
   const { user } = useAuth()
@@ -78,10 +76,6 @@ export default function ProductDetail() {
   )
 
   if (!product) return null
-
-  const quantity = Math.max(1, Number(reqForm.quantity) || 1)
-  const itemSubtotal = product.price * quantity
-  const orderTotal = itemSubtotal + PLATFORM_SERVICE_FEE
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10 min-h-screen bg-white">
@@ -174,17 +168,12 @@ export default function ProductDetail() {
                    </p>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  <div className="rounded-[1.5rem] border border-brand-100 bg-brand-50/60 px-4 py-3 text-sm text-trust-700">
-                    <span className="font-bold text-brand-700">Platform handling charge:</span> LKR {PLATFORM_SERVICE_FEE}
-                  </div>
-                  <button
-                    onClick={() => user ? setShowModal(true) : navigate('/login')}
-                    className="btn-primary w-full py-5 text-sm shadow-xl shadow-brand-500/20"
-                  >
-                    Confirm Purchase Request
-                  </button>
-                </div>
+                <button
+                  onClick={() => user ? setShowModal(true) : navigate('/login')}
+                  className="btn-primary w-full py-5 text-sm shadow-xl shadow-brand-500/20"
+                >
+                  Confirm Purchase Request
+                </button>
               )}
             </div>
           )}
@@ -250,29 +239,6 @@ export default function ProductDetail() {
                       value={reqForm.message}
                       onChange={e => setReqForm({...reqForm, message: e.target.value})}
                     />
-                 </div>
-
-                 <div className="rounded-[2rem] border border-brand-100 bg-brand-50/60 p-5">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-brand-700 mb-4">
-                      Total Cost Summary
-                    </p>
-                    <div className="space-y-3 text-sm">
-                      <div className="flex items-center justify-between text-trust-600">
-                        <span>Item cost ({quantity} x LKR {product.price.toLocaleString()})</span>
-                        <span className="font-mono font-bold text-trust-900">LKR {itemSubtotal.toLocaleString()}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-trust-600">
-                        <span>Platform handling charge</span>
-                        <span className="font-mono font-bold text-trust-900">LKR {PLATFORM_SERVICE_FEE.toLocaleString()}</span>
-                      </div>
-                      <div className="border-t border-brand-100 pt-3 flex items-center justify-between">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-brand-700">Total</span>
-                        <span className="font-mono text-xl font-bold text-brand-700">LKR {orderTotal.toLocaleString()}</span>
-                      </div>
-                    </div>
-                    <p className="mt-4 text-xs leading-relaxed text-trust-500">
-                      Our platform charges LKR {PLATFORM_SERVICE_FEE} to handle your item. Your final payable amount is item cost plus service cost.
-                    </p>
                  </div>
 
                  <div className="flex gap-4 pt-4">
