@@ -42,6 +42,10 @@ class RegisterRequest(BaseModel):
     phone: str
     phone2: Optional[str] = None
     address: str
+    bank_name: Optional[str] = None
+    bank_branch: Optional[str] = None
+    account_number: Optional[str] = None
+    account_name: Optional[str] = None
 
 class ProfileUpdate(BaseModel):
     phone: Optional[str] = None
@@ -182,4 +186,3 @@ class OrderStatusUpdate(BaseModel):
 
 class UserEarningsUpdate(BaseModel):
     earnings: float
-

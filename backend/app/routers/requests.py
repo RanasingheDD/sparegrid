@@ -5,6 +5,7 @@ from typing import List
 from app.database import get_db
 from app.schemas.schemas import OrderOut, RequestCreate, ProductStatus, RequestStatus, UserOut, UserRole, DeliveryStatus
 from app.services.auth_service import get_current_user, require_role
+from app.services.email_service import send_new_order_notifications
 
 router = APIRouter()
 
@@ -65,6 +66,19 @@ def create_request(
     insert_response = db.table("orders").insert(order_data).execute()
     new_order = insert_response.data[0]
     new_order["id"] = str(new_order["id"])
+
+    try:
+        send_new_order_notifications(
+            order_id=new_order["id"],
+            buyer_name=current_user.name,
+            buyer_email=current_user.email,
+            product_title=p_data.get("title", "Unknown product"),
+            quantity=new_order.get("quantity") or 1,
+            shipping_address=new_order.get("shipping_address") or "Not provided",
+            item_cost=float(p_data.get("price") or 0),
+        )
+    except Exception:
+        pass
     
     new_order["buyer"] = current_user.model_dump()
     new_order["product"] = p_data

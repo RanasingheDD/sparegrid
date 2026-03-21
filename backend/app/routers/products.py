@@ -6,6 +6,7 @@ from app.database import get_db
 from app.schemas.schemas import ProductCreate, ProductUpdate, ProductOut, ProductStatus, UserOut, UserRole
 from app.services.auth_service import get_current_user, require_role
 from app.services.cloudinary_service import cloudinary_service
+from app.services.email_service import send_new_product_notifications
 from fastapi import UploadFile, File
 import json
 
@@ -94,6 +95,17 @@ def create_product(
     
     new_product["id"] = str(new_product["id"])
     new_product["images"] = ensure_list(new_product.get("images"))
+    try:
+        send_new_product_notifications(
+            seller_email=current_user.email,
+            seller_name=current_user.name,
+            product_id=new_product["id"],
+            title=new_product.get("title", "Untitled product"),
+            price=float(new_product.get("price") or 0),
+            category=new_product.get("category", "Uncategorized"),
+        )
+    except Exception:
+        pass
     new_product.pop("seller_id", None)
     return new_product
 

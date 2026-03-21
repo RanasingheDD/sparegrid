@@ -4,6 +4,7 @@ from supabase import Client
 from app.database import get_db
 from app.schemas.schemas import RegisterRequest, LoginRequest, TokenResponse, UserOut, ProfileUpdate
 from app.services.auth_service import hash_password, verify_password, create_access_token, get_current_user
+from app.services.email_service import send_welcome_email
 
 router = APIRouter()
 
@@ -34,6 +35,10 @@ def register(data: RegisterRequest, db: Client = Depends(get_db)):
     new_user = insert_response.data[0]
     
     new_user["id"] = str(new_user["id"])
+    try:
+        send_welcome_email(user_email=new_user["email"], user_name=new_user["name"])
+    except Exception:
+        pass
     return UserOut(**new_user)
 
 @router.post("/login", response_model=TokenResponse)

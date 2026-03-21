@@ -62,7 +62,7 @@ export default function Footer() {
             <ul className="mt-6 space-y-3 text-sm text-white/70">
               <li className="flex items-center gap-3">
                 <Mail size={15} className="text-brand-300" />
-                <span>support.sparegrid@gmail.com</span>
+                <span>suport.sparegrid@gmail.com</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={15} className="text-brand-300" />

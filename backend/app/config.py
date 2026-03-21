@@ -12,6 +12,13 @@ class Settings(BaseSettings):
     CLOUDINARY_API_KEY: str = "398986981647894"
     CLOUDINARY_API_SECRET: str = "hftHAMVwaGXdc24lXSWgL9-FiZ8"
 
+    # Email notifications
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: str = "suport.sparegrid@gmail.com"
+    SMTP_PASSWORD: str = "yqsy qbgd ddjq kayn"
+    SUPPORT_EMAIL: str = "suport.sparegrid@gmail.com"
+
     class Config:
         env_file = ".env"
 

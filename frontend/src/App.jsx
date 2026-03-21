@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { useEffect } from 'react'
 import { AuthProvider, useAuth } from './context/AuthContext'
 
 import Navbar        from './components/Navbar'
@@ -11,6 +12,16 @@ import ProductDetail from './pages/ProductDetail'
 import UserDashboard  from './pages/UserDashboard'
 import AdminDashboard  from './pages/AdminDashboard'
 import TermsAndConditions from './pages/TermsAndConditions'
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
+  return null
+}
 
 function ProtectedRoute({ children, roles }) {
   const { user, loading } = useAuth()
@@ -28,6 +39,7 @@ function ProtectedRoute({ children, roles }) {
 function AppRoutes() {
   return (
     <div className="min-h-screen flex flex-col">
+      <ScrollToTop />
       <Navbar />
       <main className="flex-1">
         <Routes>

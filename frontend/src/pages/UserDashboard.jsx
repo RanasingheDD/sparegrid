@@ -30,6 +30,10 @@ export default function UserDashboard() {
   const [uploading, setUploading] = useState(false)
   const [confirmAction, setConfirmAction] = useState(null)
 
+  const setPayoutField = (key, value) => {
+    setPayoutForm((prev) => ({ ...prev, [key]: value.toUpperCase() }))
+  }
+
   const loadData = async () => {
     setLoading(true)
     try {
@@ -314,20 +318,20 @@ export default function UserDashboard() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-[10px] uppercase font-bold text-trust-400 mb-1.5 font-body">Bank Name</label>
-                        <input type="text" className="input text-xs" value={payoutForm.bank_name} onChange={e => setPayoutForm({ ...payoutForm, bank_name: e.target.value })} placeholder="e.g. HNB" required />
+                        <input type="text" className="input text-xs uppercase" value={payoutForm.bank_name} onChange={e => setPayoutField('bank_name', e.target.value)} placeholder="E.G. HNB" required />
                       </div>
                       <div>
                         <label className="block text-[10px] uppercase font-bold text-trust-400 mb-1.5 font-body">Branch</label>
-                        <input type="text" className="input text-xs" value={payoutForm.bank_branch} onChange={e => setPayoutForm({ ...payoutForm, bank_branch: e.target.value })} placeholder="e.g. Galle" required />
+                        <input type="text" className="input text-xs uppercase" value={payoutForm.bank_branch} onChange={e => setPayoutField('bank_branch', e.target.value)} placeholder="E.G. GALLE" required />
                       </div>
                     </div>
                     <div>
                       <label className="block text-[10px] uppercase font-bold text-trust-400 mb-1.5 font-body">Account Number</label>
-                      <input type="text" className="input text-xs font-mono" value={payoutForm.account_number} onChange={e => setPayoutForm({ ...payoutForm, account_number: e.target.value })} placeholder="0012345678" required />
+                      <input type="text" className="input text-xs font-mono uppercase" value={payoutForm.account_number} onChange={e => setPayoutField('account_number', e.target.value)} placeholder="0012345678" required />
                     </div>
                     <div>
                       <label className="block text-[10px] uppercase font-bold text-trust-400 mb-1.5 font-body">Account Holder Name</label>
-                      <input type="text" className="input text-xs" value={payoutForm.account_name} onChange={e => setPayoutForm({ ...payoutForm, account_name: e.target.value })} placeholder="e.g. J.D. Silva" required />
+                      <input type="text" className="input text-xs uppercase" value={payoutForm.account_name} onChange={e => setPayoutField('account_name', e.target.value)} placeholder="E.G. J.D. SILVA" required />
                     </div>
                     <button type="submit" disabled={updatingPayout} className="w-full btn-primary py-4 mt-2">
                       {updatingPayout ? 'Saving...' : 'Confirm Payout Profile'}

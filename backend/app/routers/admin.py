@@ -5,6 +5,7 @@ from typing import List, Optional
 from app.database import get_db
 from app.schemas.schemas import RequestOut, RequestStatusUpdate, OrderOut, OrderStatusUpdate, RequestStatus, UserRole, UserOut, ProductOut, ProductStatus, DeliveryStatus, UserEarningsUpdate
 from app.services.auth_service import require_role
+from app.services.email_service import send_order_status_email, send_product_review_email
 from app.utils import ensure_list
 
 router = APIRouter()
@@ -61,6 +62,16 @@ def approve_product(
         s_data = seller_response.data[0]
         s_data["id"] = str(s_data["id"])
         p_data["seller"] = s_data
+        try:
+            send_product_review_email(
+                seller_email=s_data.get("email", ""),
+                seller_name=s_data.get("name", "Seller"),
+                title=p_data.get("title", "Your listing"),
+                status=status,
+                item_cost=float(p_data.get("price") or 0),
+            )
+        except Exception:
+            pass
         
     p_data["images"] = ensure_list(p_data.get("images"))
     return p_data
@@ -248,6 +259,24 @@ def update_order_status(
         p_data["id"] = str(p_data["id"])
         p_data["images"] = ensure_list(p_data.get("images"))
         o_data["product"] = p_data
+
+    buyer_response = db.table("users").select("*").eq("id", o_data.get("buyer_id")).execute()
+    if buyer_response.data:
+        b_data = buyer_response.data[0]
+        b_data["id"] = str(b_data["id"])
+        o_data["buyer"] = b_data
+        try:
+            send_order_status_email(
+                buyer_email=b_data.get("email", ""),
+                buyer_name=b_data.get("name", "Customer"),
+                order_id=o_data["id"],
+                product_title=o_data.get("product", {}).get("title", "Your order"),
+                item_cost=float(o_data.get("product", {}).get("price") or 0),
+                status=data.delivery_status,
+                tracking_notes=o_data.get("tracking_notes"),
+            )
+        except Exception:
+            pass
 
     return o_data
 
