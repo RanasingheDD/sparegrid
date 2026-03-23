@@ -75,7 +75,7 @@ export default function TermsAndConditions() {
             Sellers are responsible for paying the shipping cost to send items to the LankaParts warehouse.
           </p>
           <p className="mt-3">
-            If a buyer rejects the part, LankaParts returns it and charges LKR {policies?.failed_order_return_service_charge?.toLocaleString?.() || '480'}.
+            If a buyer rejects the part, LankaParts returns it and charges delivery cost.
           </p>
         </section>
 
