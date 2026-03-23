@@ -10,7 +10,7 @@ export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' })
   const [loading, setLoading] = useState(false)
 
-  const DASHBOARD = { buyer: '/buyer', seller: '/seller', admin: '/admin', user: '/buyer' }
+  const DASHBOARD = { buyer: '/dashboard', seller: '/dashboard', admin: '/admin', user: '/dashboard' }
 
   const handleSubmit = async (e) => {
     e.preventDefault()

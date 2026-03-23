@@ -3,9 +3,9 @@ import { useAuth } from '../context/AuthContext'
 import { Package, LayoutDashboard, LogOut, ChevronRight, ShieldCheck, Flame } from 'lucide-react'
 
 const DASHBOARD_ROUTES = {
-  buyer: '/buyer',
-  seller: '/seller',
-  user: '/buyer',
+  buyer: '/dashboard',
+  seller: '/dashboard',
+  user: '/dashboard',
   admin: '/admin',
 }
 

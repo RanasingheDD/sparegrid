@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { productsAPI, ordersAPI } from '../services/api'
+import { productsAPI, ordersAPI, policyAPI } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import StatusBadge from '../components/StatusBadge'
+import { resolvePlatformCosts } from '../config/platformCosts'
 import toast from 'react-hot-toast'
 import { ArrowLeft, Wrench, Tag, User, Phone, ShieldCheck } from 'lucide-react'
 
@@ -16,6 +17,7 @@ export default function ProductDetail() {
   const [showModal, setShowModal] = useState(false)
   const [activeOrder, setActiveOrder] = useState(null)
   const [activeImageIdx, setActiveImageIdx] = useState(0)
+  const [policies, setPolicies] = useState(null)
   
   const [reqForm, setReqForm] = useState({ 
     quantity: 1, 
@@ -29,6 +31,21 @@ export default function ProductDetail() {
         setReqForm(prev => ({ ...prev, shipping_address: user.address }))
     }
   }, [user])
+
+  useEffect(() => {
+    if (!showModal) return
+
+    setReqForm((prev) => ({
+      ...prev,
+      quantity: 1,
+      shipping_address: user?.address || '',
+      message: '',
+    }))
+  }, [showModal, user])
+
+  useEffect(() => {
+    policyAPI.getPublic().then(({ data }) => setPolicies(data)).catch(() => {})
+  }, [])
 
   useEffect(() => {
     productsAPI.get(id)
@@ -76,6 +93,12 @@ export default function ProductDetail() {
   )
 
   if (!product) return null
+
+  const costs = resolvePlatformCosts(policies)
+  const shippingCost = costs.buyerShippingCost
+  const orderQuantity = Number(reqForm.quantity) || 1
+  const itemSubtotal = (product.price || 0) * orderQuantity
+  const totalCost = itemSubtotal + shippingCost
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-10 min-h-screen bg-white">
@@ -125,6 +148,24 @@ export default function ProductDetail() {
 
           <div className="font-mono text-4xl font-bold text-brand-600 tracking-tighter">
             LKR {product.price.toLocaleString()}
+          </div>
+
+          <div className="rounded-[2rem] border border-trust-100 bg-trust-50/70 p-5">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-trust-400 mb-3">Buyer Cost Notice</p>
+            <div className="space-y-2 text-sm text-trust-700">
+              <div className="flex items-center justify-between">
+                <span>Item price</span>
+                <span className="font-mono font-bold text-trust-900">LKR {product.price.toLocaleString()}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span>Shipping cost</span>
+                <span className="font-mono font-bold text-trust-900">LKR {shippingCost.toLocaleString()}</span>
+              </div>
+              <div className="flex items-center justify-between border-t border-trust-100 pt-2">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-brand-600">Total payable</span>
+                <span className="font-mono text-base font-bold text-brand-600">LKR {(product.price + shippingCost).toLocaleString()}</span>
+              </div>
+            </div>
           </div>
 
           {product.model_number && (
@@ -196,7 +237,7 @@ export default function ProductDetail() {
       {showModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
            <div className="absolute inset-0 bg-trust-950/40 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-           <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-sm p-10 animate-in fade-in zoom-in duration-300 border border-trust-100">
+           <div className="relative bg-white rounded-[2.5rem] shadow-2xl w-full max-w-sm max-h-[calc(100vh-2rem)] overflow-y-auto p-6 sm:p-8 md:p-10 animate-in fade-in zoom-in duration-300 border border-trust-100">
               <h2 className="text-3xl font-display font-bold text-trust-900 mb-2">Request Item</h2>
               <p className="text-xs text-trust-400 font-bold uppercase tracking-wider mb-8">Brokerage Management</p>
               
@@ -241,9 +282,29 @@ export default function ProductDetail() {
                     />
                  </div>
 
-                 <div className="flex gap-4 pt-4">
-                    <button type="button" onClick={() => setShowModal(false)} className="flex-1 text-[10px] font-bold uppercase tracking-widest text-trust-400 hover:text-trust-900 transition-colors">Abort</button>
-                    <button type="submit" disabled={ordering} className="flex-[2] btn-primary py-4">
+                 <div className="rounded-2xl border border-brand-100 bg-brand-50/60 px-4 py-4">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-brand-600 mb-3">Order Cost Summary</p>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center justify-between text-trust-700">
+                        <span>Item subtotal</span>
+                        <span className="font-mono font-bold text-trust-900">LKR {itemSubtotal.toLocaleString()}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-trust-700">
+                        <span>Shipping cost</span>
+                        <span className="font-mono font-bold text-trust-900">LKR {shippingCost.toLocaleString()}</span>
+                      </div>
+                      <div className="flex items-center justify-between border-t border-brand-100 pt-2">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-brand-600">Total cost</span>
+                        <span className="font-mono text-base font-bold text-brand-600">LKR {totalCost.toLocaleString()}</span>
+                      </div>
+                    </div>
+                 </div>
+
+                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
+                    <button type="button" onClick={() => setShowModal(false)} className="w-full sm:flex-1 text-[10px] font-bold uppercase tracking-widest text-trust-400 hover:text-trust-900 transition-colors py-3">
+                      Abort
+                    </button>
+                    <button type="submit" disabled={ordering} className="w-full sm:flex-[2] btn-primary py-4">
                        {ordering ? 'Processing...' : 'Place Request'}
                     </button>
                  </div>

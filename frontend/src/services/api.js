@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://sparegrid-4k4f.vercel.app',
+  baseURL: 'http://localhost:8000',//'https://sparegrid-4k4f.vercel.app',
   headers: { 'Content-Type': 'application/json' },
 })
 
@@ -64,6 +64,10 @@ export const ordersAPI = {
   getSelling: () => api.get('/orders/selling'),
 }
 
+export const policyAPI = {
+  getPublic: () => api.get('/policies/public'),
+}
+
 // ─── Admin ────────────────────────────────────────────────────────────────────
 export const adminAPI = {
   getProducts: (status) => api.get('/admin/products', { params: status ? { status } : {} }),
@@ -77,7 +81,8 @@ export const adminAPI = {
   getStats: () => api.get('/admin/stats'),
   getUsers: () => api.get('/admin/users'),
   deleteUser: (id) => api.delete(`/admin/users/${id}`),
-  updateUserEarnings: (id, earnings) => api.put(`/admin/users/${id}/earnings`, { earnings })
+  updateUserEarnings: (id, earnings) => api.put(`/admin/users/${id}/earnings`, { earnings }),
+  updateUserRestriction: (id, is_restricted, reason) => api.put(`/admin/users/${id}/restriction`, { is_restricted, reason }),
 }
 
 export default api

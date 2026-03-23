@@ -75,6 +75,9 @@ class TokenResponse(BaseModel):
     account_number: Optional[str] = None
     account_name: Optional[str] = None
     earnings: float = 0.0
+    is_restricted: bool = False
+    restriction_reason: Optional[str] = None
+    failed_orders_count: int = 0
 
 class UserOut(BaseModel):
     id: str
@@ -89,6 +92,9 @@ class UserOut(BaseModel):
     account_number: Optional[str] = None
     account_name: Optional[str] = None
     earnings: float = 0.0
+    is_restricted: bool = False
+    restriction_reason: Optional[str] = None
+    failed_orders_count: int = 0
     created_at: datetime
 
 
@@ -170,6 +176,8 @@ class OrderOut(BaseModel):
     shipping_address: Optional[str] = None
     message: Optional[str] = None
     created_at: datetime
+    shipping_cost: Optional[float] = None
+    total_cost: Optional[float] = None
     buyer: Optional[UserOut] = None
     seller: Optional[UserOut] = None
     product: Optional[ProductOut] = None
@@ -186,3 +194,8 @@ class OrderStatusUpdate(BaseModel):
 
 class UserEarningsUpdate(BaseModel):
     earnings: float
+
+
+class UserRestrictionUpdate(BaseModel):
+    is_restricted: bool
+    reason: Optional[str] = None

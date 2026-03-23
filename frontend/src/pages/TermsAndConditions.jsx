@@ -1,7 +1,15 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, ShieldCheck } from 'lucide-react'
+import { policyAPI } from '../services/api'
 
 export default function TermsAndConditions() {
+  const [policies, setPolicies] = useState(null)
+
+  useEffect(() => {
+    policyAPI.getPublic().then(({ data }) => setPolicies(data)).catch(() => {})
+  }, [])
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-12 min-h-screen">
       <Link to="/register" className="flex items-center gap-2 text-trust-400 hover:text-brand-600 text-[10px] font-bold uppercase tracking-widest mb-10 transition-all group">
@@ -14,7 +22,7 @@ export default function TermsAndConditions() {
         </div>
         <div>
           <h1 className="text-4xl font-display font-bold text-trust-900">Terms &amp; Conditions</h1>
-          <p className="text-trust-400 font-body text-sm mt-1">SpareGrid Marketplace — Effective: March 2026</p>
+          <p className="text-trust-400 font-body text-sm mt-1">SpareGrid Marketplace — Effective: March 23, 2026</p>
         </div>
       </div>
 
@@ -33,27 +41,44 @@ export default function TermsAndConditions() {
         <section>
           <h2 className="text-lg font-display font-bold text-trust-900 mb-3">3. Listing Products (Sellers)</h2>
           <ul className="list-disc list-outside ml-5 space-y-2">
-            <li>All product listings must be for genuine, legally owned spare parts and electronics.</li>
-            <li>Listings are subject to administrator review and approval before becoming visible on the marketplace.</li>
-            <li>Sellers must accurately describe the condition (New, Used, Reconditioned) and provide clear images.</li>
-            <li>SpareGrid reserves the right to reject or remove any listing that violates platform guidelines without notice.</li>
-            <li>Sellers are responsible for delivering items in the described condition to the SpareGrid central warehouse.</li>
+            {(policies?.terms_sections?.find(section => section.title === 'Seller Rules')?.items || [
+              'Only items priced above LKR 1,000 are accepted on the platform.',
+              'Listings are reviewed by SpareGrid before they go live.',
+              'The seller must pay the shipping cost when sending an item to the SpareGrid warehouse.',
+              'Seller must ship within 48 hours after SpareGrid confirms the order.',
+              'Payments are released after SpareGrid verifies the part, and payout handling happens on Fridays.',
+
+            ]).map((item) => (
+              <li key={item}>{item}</li>
+            ))}
           </ul>
         </section>
 
         <section>
           <h2 className="text-lg font-display font-bold text-trust-900 mb-3">4. Purchasing Items (Buyers)</h2>
           <ul className="list-disc list-outside ml-5 space-y-2">
-            <li>All purchase requests are brokered by the SpareGrid administrative team for security verification.</li>
-            <li>Payment terms and methods will be communicated upon order approval.</li>
-            <li>Buyers must provide an accurate shipping address. SpareGrid is not liable for failed deliveries due to incorrect addresses.</li>
-            <li>Disputes must be raised within 48 hours of delivery through our official support channels.</li>
+            {(policies?.terms_sections?.find(section => section.title === 'Buyer Rules')?.items || [
+              'Every order includes a shipping charge of LKR 450.',
+              'The total payable amount is item price plus the shipping charge.',
+              'Buyers should provide a correct shipping address before placing the order.',
+              'SpareGrid reviews and coordinates delivery for each order.',
+            ]).map((item) => (
+              <li key={item}>{item}</li>
+            ))}
           </ul>
         </section>
 
         <section>
           <h2 className="text-lg font-display font-bold text-trust-900 mb-3">5. Brokerage & Payment</h2>
-          <p>SpareGrid operates as an intermediary platform. All transactions are facilitated and secured by the SpareGrid team. A service commission may be applied to completed transactions. Seller earnings are processed and paid out every Friday to the registered bank account.</p>
+          <p>
+            SpareGrid operates as an intermediary platform. All transactions are facilitated and secured by the SpareGrid team. Seller earnings are released only after part verification, and payout handling is processed every {policies?.seller_payout_day || 'Friday'}.
+          </p>
+          <p className="mt-3">
+            Sellers are responsible for paying the shipping cost to send items to the SpareGrid warehouse.
+          </p>
+          <p className="mt-3">
+            If a buyer rejects the part, SpareGrid returns it and charges LKR {policies?.failed_order_return_service_charge?.toLocaleString?.() || '480'}.
+          </p>
         </section>
 
         <section>

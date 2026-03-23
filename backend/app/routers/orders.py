@@ -5,6 +5,7 @@ from app.database import get_db
 from app.schemas.schemas import OrderOut, UserOut
 from app.services.auth_service import get_current_user
 from app.utils import ensure_list
+from app.policies import MARKETPLACE_POLICIES, calculate_order_total
 
 router = APIRouter()
 
@@ -36,6 +37,8 @@ def get_my_purchases(
             o["product"] = p_resp.data[0]
             o["product"]["id"] = str(o["product"]["id"])
             o["product"]["images"] = ensure_list(o["product"].get("images"))
+            o["shipping_cost"] = MARKETPLACE_POLICIES["buyer_shipping_cost"]
+            o["total_cost"] = calculate_order_total(float(o["product"].get("price") or 0), int(o.get("quantity") or 1))
 
         results.append(o)
     return results
@@ -60,6 +63,8 @@ def get_my_sales(
             o["product"] = p_resp.data[0]
             o["product"]["id"] = str(o["product"]["id"])
             o["product"]["images"] = ensure_list(o["product"].get("images"))
+            o["shipping_cost"] = MARKETPLACE_POLICIES["buyer_shipping_cost"]
+            o["total_cost"] = calculate_order_total(float(o["product"].get("price") or 0), int(o.get("quantity") or 1))
                 
         results.append(o)
     return results

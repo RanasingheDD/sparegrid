@@ -1,19 +1,27 @@
 import { useState, useEffect } from 'react'
-import { productsAPI, ordersAPI, authAPI } from '../services/api'
+import { productsAPI, ordersAPI, authAPI, policyAPI } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import StatusBadge from '../components/StatusBadge'
+import { resolvePlatformCosts } from '../config/platformCosts'
 import toast from 'react-hot-toast'
 import { Plus, Edit, Trash2, Package, ShoppingCart, Truck, ExternalLink, Store, History } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import ConfirmModal from '../components/ConfirmModal'
 
 const EMPTY_FORM = { title: '', description: '', price: '', category: 'TV', images: [], stock_count: 1, condition: 'Used', model_number: '' }
-const SERVICE_CHARGE = 200
 const isAdminAcceptedOrder = (status) => status && !['pending_admin', 'rejected'].includes(status)
 
 export default function UserDashboard() {
   const { user, refreshUser } = useAuth()
-  if (!user) return null // Guard against null user
+  const fallbackUser = (() => {
+    try {
+      const raw = localStorage.getItem('user')
+      return raw ? JSON.parse(raw) : null
+    } catch {
+      return null
+    }
+  })()
+  const activeUser = user || fallbackUser
   const [activeTab, setActiveTab] = useState('inventory') // 'inventory' | 'purchases' | 'sales'
 
   const [products, setProducts] = useState([])
@@ -29,6 +37,8 @@ export default function UserDashboard() {
   const [updatingPayout, setUpdatingPayout] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [confirmAction, setConfirmAction] = useState(null)
+  const [policies, setPolicies] = useState(null)
+  const [agreementAccepted, setAgreementAccepted] = useState(false)
 
   const setPayoutField = (key, value) => {
     setPayoutForm((prev) => ({ ...prev, [key]: value.toUpperCase() }))
@@ -56,6 +66,9 @@ export default function UserDashboard() {
   }
 
   useEffect(() => { loadData() }, [activeTab])
+  useEffect(() => {
+    policyAPI.getPublic().then(({ data }) => setPolicies(data)).catch(() => {})
+  }, [])
 
   const handleEdit = (p) => {
     setForm({
@@ -74,12 +87,12 @@ export default function UserDashboard() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (!editingId && (!user.bank_name || !user.account_number)) {
+    if (!editingId && (!activeUser?.bank_name || !activeUser?.account_number)) {
       setPayoutForm({
-        bank_name: user.bank_name || '',
-        bank_branch: user.bank_branch || '',
-        account_number: user.account_number || '',
-        account_name: user.account_name || ''
+        bank_name: activeUser?.bank_name || '',
+        bank_branch: activeUser?.bank_branch || '',
+        account_number: activeUser?.account_number || '',
+        account_name: activeUser?.account_name || ''
       })
       setShowPayoutModal(true)
       toast.error('Please complete your payout profile first')
@@ -93,6 +106,17 @@ export default function UserDashboard() {
 
     setSaving(true)
     try {
+      if (!editingId) {
+        if (activeUser?.is_restricted) {
+          toast.error(activeUser.restriction_reason || 'Your seller account is restricted')
+          return
+        }
+        if (!agreementAccepted) {
+          toast.error('Please accept the seller service agreement before posting your first product')
+          return
+        }
+      }
+
       // Normalize images to URLs for backend compatibility (List[str] expected)
       const sanitizedImages = form.images.map(img =>
         typeof img === 'object' ? img.url : img
@@ -101,7 +125,7 @@ export default function UserDashboard() {
       const payload = {
         ...form,
         images: sanitizedImages,
-        price: editingId ? parseFloat(form.price) : parseFloat(form.price) + SERVICE_CHARGE
+        price: parseFloat(form.price)
       }
 
       if (editingId) {
@@ -109,7 +133,8 @@ export default function UserDashboard() {
         toast.success('✏️ Listing updated successfully.')
       } else {
         await productsAPI.create(payload)
-        toast.success(`🎉 Your listing has been submitted with a LKR ${SERVICE_CHARGE} service charge added. It will appear on the marketplace after admin review — usually within 24 hours.`)
+        toast.success('🎉 Your listing has been submitted. It will appear on the marketplace after admin review.')
+        setAgreementAccepted(false)
       }
       setEditingId(null)
       setForm(EMPTY_FORM)
@@ -207,7 +232,15 @@ export default function UserDashboard() {
   }
 
   const enteredPrice = Number(form.price) || 0
-  const finalListingPrice = editingId ? enteredPrice : enteredPrice + SERVICE_CHARGE
+  const costs = resolvePlatformCosts(policies)
+  const minimumItemPrice = costs.minimumItemPrice
+  const shippingCost = costs.buyerShippingCost
+  const failedOrderFee = costs.failedOrderReturnServiceCharge
+  const sellerFailedLimit = costs.sellerRestrictionAfterFailedOrders
+  const sellerShipHours = costs.sellerShipWithinHours
+  const sellerPayoutDay = costs.sellerPayoutDay
+
+  if (!activeUser) return null
 
   return (
     <>
@@ -219,16 +252,16 @@ export default function UserDashboard() {
             <button
               onClick={() => {
                 setPayoutForm({
-                  bank_name: user.bank_name || '',
-                  bank_branch: user.bank_branch || '',
-                  account_number: user.account_number || '',
-                  account_name: user.account_name || ''
+                  bank_name: activeUser.bank_name || '',
+                  bank_branch: activeUser.bank_branch || '',
+                  account_number: activeUser.account_number || '',
+                  account_name: activeUser.account_name || ''
                 })
                 setShowPayoutModal(true)
               }}
               className="flex items-center gap-2 px-4 py-2 bg-white border border-trust-200 rounded-2xl text-[10px] uppercase font-bold text-trust-600 hover:border-brand-500 hover:text-brand-600 transition-all shadow-sm"
             >
-              <History size={14} /> {user.bank_name ? 'View Payout Profile' : 'Setup Payout Profile'}
+              <History size={14} /> {activeUser.bank_name ? 'View Payout Profile' : 'Setup Payout Profile'}
             </button>
           </div>
 
@@ -237,7 +270,7 @@ export default function UserDashboard() {
             <p className="text-[10px] uppercase font-bold tracking-widest opacity-80 mb-1">Available Earnings</p>
             <div className="flex items-baseline gap-2">
               <span className="text-xs font-medium opacity-80">LKR</span>
-              <h2 className="text-3xl font-display font-bold">{(user?.earnings || 0.0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</h2>
+              <h2 className="text-3xl font-display font-bold">{(activeUser?.earnings || 0.0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</h2>
             </div>
           </div>
         </div>
@@ -280,37 +313,37 @@ export default function UserDashboard() {
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-trust-900/40 backdrop-blur-sm animate-in fade-in duration-200">
             <div className="bg-white rounded-[2.5rem] w-full max-w-md shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
               <div className="p-8 border-b border-trust-100 flex justify-between items-center bg-trust-50/50">
-                <h2 className="text-2xl font-display text-trust-900">{user.bank_name ? 'Payout Profile' : 'Setup Payout Profile'}</h2>
+                <h2 className="text-2xl font-display text-trust-900">{activeUser.bank_name ? 'Payout Profile' : 'Setup Payout Profile'}</h2>
                 <button onClick={() => setShowPayoutModal(false)} className="p-2 hover:bg-trust-100 rounded-full transition-colors text-trust-400">
                   <Plus className="rotate-45" size={24} />
                 </button>
               </div>
               <div className="p-8 space-y-6">
                 <p className="text-xs text-trust-500 font-body leading-relaxed">
-                  {user.bank_name
+                  {activeUser.bank_name
                     ? "Your verified payout details. These cannot be changed for security purposes. Contact support if you need to update them."
                     : "Provide your bank account information to receive payments from sales. This is a one-time setup."}
                 </p>
 
-                {user.bank_name ? (
+                {activeUser.bank_name ? (
                   <div className="space-y-4 bg-trust-50 rounded-3xl p-6 border border-trust-100">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <p className="text-[10px] uppercase font-bold text-trust-400 mb-1">Bank</p>
-                        <p className="text-sm font-display font-bold text-trust-900">{user.bank_name}</p>
+                        <p className="text-sm font-display font-bold text-trust-900">{activeUser.bank_name}</p>
                       </div>
                       <div>
                         <p className="text-[10px] uppercase font-bold text-trust-400 mb-1">Branch</p>
-                        <p className="text-sm font-display font-bold text-trust-900">{user.bank_branch}</p>
+                        <p className="text-sm font-display font-bold text-trust-900">{activeUser.bank_branch}</p>
                       </div>
                     </div>
                     <div>
                       <p className="text-[10px] uppercase font-bold text-trust-400 mb-1">A/C Number</p>
-                      <p className="text-sm font-mono font-bold text-brand-600">{user.account_number}</p>
+                      <p className="text-sm font-mono font-bold text-brand-600">{activeUser.account_number}</p>
                     </div>
                     <div>
                       <p className="text-[10px] uppercase font-bold text-trust-400 mb-1">A/C Holder</p>
-                      <p className="text-sm font-display font-medium text-trust-700">{user.account_name}</p>
+                      <p className="text-sm font-display font-medium text-trust-700">{activeUser.account_name}</p>
                     </div>
                   </div>
                 ) : (
@@ -339,7 +372,7 @@ export default function UserDashboard() {
                   </form>
                 )}
 
-                {user.bank_name && (
+                {activeUser.bank_name && (
                   <button onClick={() => setShowPayoutModal(false)} className="w-full btn-ghost py-4 border-trust-200">Got it</button>
                 )}
               </div>
@@ -458,6 +491,14 @@ export default function UserDashboard() {
               <div className="lg:col-span-4 lg:sticky lg:top-24 h-fit">
                 <div className="bg-white rounded-3xl border border-trust-100 p-8 shadow-sm">
                   <h2 className="text-xl font-display text-trust-900 mb-6">{editingId ? 'Edit Spare' : 'New Listing'}</h2>
+                  {!editingId && activeUser.is_restricted && (
+                    <div className="mb-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-4">
+                      <p className="text-[10px] uppercase font-bold tracking-widest text-red-700 mb-2">Seller Account Restricted</p>
+                      <p className="text-sm text-red-700 leading-relaxed">
+                        {activeUser.restriction_reason || 'Your seller account is restricted. You cannot add new items right now.'}
+                      </p>
+                    </div>
+                  )}
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                       <label className="block text-[10px] uppercase font-bold text-trust-400 mb-1.5 font-body tracking-wider">Title</label>
@@ -470,7 +511,10 @@ export default function UserDashboard() {
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <label className="block text-[10px] uppercase font-bold text-trust-400 mb-1.5 font-body tracking-wider">Price</label>
-                        <input type="number" className="input" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} required />
+                        <input type="number" min={minimumItemPrice + 1} className="input" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} required />
+                        <p className="mt-1 text-[10px] font-bold uppercase tracking-wider text-trust-400">
+                          Price must be greater than LKR {minimumItemPrice.toLocaleString()}
+                        </p>
                       </div>
                       <div>
                         <label className="block text-[10px] uppercase font-bold text-trust-400 mb-1.5 font-body tracking-wider">Stock</label>
@@ -501,21 +545,40 @@ export default function UserDashboard() {
                       </div>
                     </div>
                     {!editingId && (
-                      <div className="rounded-2xl border border-brand-100 bg-brand-50/60 px-4 py-4">
-                        <p className="text-[10px] uppercase font-bold tracking-widest text-brand-700 mb-3">Listing Price Summary</p>
-                        <div className="space-y-2 text-sm">
-                          <div className="flex items-center justify-between text-trust-600">
-                            <span>Your entered price</span>
-                            <span className="font-mono font-bold text-trust-900">LKR {enteredPrice.toLocaleString()}</span>
+                      <div className="rounded-2xl border border-brand-100 bg-brand-50/60 px-4 py-4 space-y-4">
+                        <div>
+                          <p className="text-[10px] uppercase font-bold tracking-widest text-brand-700 mb-3">Listing Price Summary</p>
+                          <div className="space-y-2 text-sm">
+                            <div className="flex items-center justify-between text-trust-600">
+                              <span>Your entered price</span>
+                              <span className="font-mono font-bold text-trust-900">LKR {enteredPrice.toLocaleString()}</span>
+                            </div>
+                            <div className="flex items-center justify-between border-t border-brand-100 pt-2">
+                              <span className="text-[10px] uppercase font-bold tracking-widest text-brand-700">Marketplace listing price</span>
+                              <span className="font-mono text-base font-bold text-brand-700">LKR {enteredPrice.toLocaleString()}</span>
+                            </div>
                           </div>
-                          <div className="flex items-center justify-between text-trust-600">
-                            <span>Service charge</span>
-                            <span className="font-mono font-bold text-trust-900">LKR {SERVICE_CHARGE.toLocaleString()}</span>
-                          </div>
-                          <div className="flex items-center justify-between border-t border-brand-100 pt-2">
-                            <span className="text-[10px] uppercase font-bold tracking-widest text-brand-700">Final listing price</span>
-                            <span className="font-mono text-base font-bold text-brand-700">LKR {finalListingPrice.toLocaleString()}</span>
-                          </div>
+                        </div>
+
+                        <div className="rounded-2xl bg-white/80 border border-brand-100 px-4 py-4">
+                          <p className="text-[10px] uppercase font-bold tracking-widest text-brand-700 mb-3">Seller Service Agreement</p>
+                          {!editingId && (
+                            <label className="mt-4 flex items-start gap-3 text-xs text-trust-700 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={agreementAccepted}
+                                onChange={(e) => setAgreementAccepted(e.target.checked)}
+                                className="mt-0.5"
+                              />
+                              <span>
+                                I agree to the{' '}
+                                <Link to="/terms" target="_blank" className="font-bold text-brand-600 underline underline-offset-2 hover:text-brand-700">
+                                  SpareGrid seller service agreement
+                                </Link>
+                                {' '}for my first listing.
+                              </span>
+                            </label>
+                          )}
                         </div>
                       </div>
                     )}
@@ -563,7 +626,7 @@ export default function UserDashboard() {
                     </div>
                     <div className="flex gap-2 pt-2">
                       {editingId && <button type="button" onClick={() => { setEditingId(null); setForm(EMPTY_FORM) }} className="flex-1 btn-ghost">Cancel</button>}
-                      <button type="submit" disabled={saving} className="flex-[2] btn-primary">{saving ? '...' : editingId ? 'Update' : 'Post'}</button>
+                      <button type="submit" disabled={saving || (!editingId && activeUser.is_restricted)} className="flex-[2] btn-primary">{saving ? '...' : editingId ? 'Update' : 'Post'}</button>
                     </div>
                   </form>
                 </div>
@@ -629,6 +692,14 @@ export default function UserDashboard() {
                     <div className="flex justify-between items-center">
                       <span className="text-[10px] font-bold text-trust-400 uppercase">Price</span>
                       <span className="text-sm font-bold text-trust-900">LKR {o.product?.price?.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-[10px] font-bold text-trust-400 uppercase">Shipping</span>
+                      <span className="text-sm font-bold text-trust-900">LKR {shippingCost.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-center mt-2 border-t border-trust-100 pt-2">
+                      <span className="text-[10px] font-bold text-trust-400 uppercase">Total</span>
+                      <span className="text-sm font-bold text-brand-600">LKR {((o.product?.price || 0) * (o.quantity || 1) + shippingCost).toLocaleString()}</span>
                     </div>
                   </div>
                   {isAdminAcceptedOrder(o.delivery_status) && (

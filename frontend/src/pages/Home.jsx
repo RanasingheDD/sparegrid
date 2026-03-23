@@ -4,36 +4,48 @@ import ProductCard from '../components/ProductCard'
 import {
   Search,
   SlidersHorizontal,
-  Sparkles,
   ShieldCheck,
   Truck,
   Store,
-  BadgePercent,
   ArrowRight,
-  Star,
+  CircuitBoard,
+  ScanSearch,
+  Layers3,
 } from 'lucide-react'
 
 const CATEGORIES = [
   'All',
-  'TV Boards',
-  'Power Supplies',
-  'Washing Machine Boards',
-  'Laptop Boards',
-  'Mobile Boards',
-  'Refrigerator Boards',
-  'Other',
+  'TV',
+  'POWER SUPPLY',
+  'WASHING MACHINE',
+  'LAPTOP',
+  'MOBILE',
+  'REFRIGIATOR',
+  'OTHER',
 ]
 
-const TRUST_POINTS = [
-  { icon: ShieldCheck, title: 'Verified sellers', text: 'Buy with more confidence from approved marketplace accounts.' },
-  { icon: Truck, title: 'Islandwide delivery', text: 'Fast sourcing for urgent replacements and repeat shop orders.' },
-  { icon: BadgePercent, title: 'Clearer deals', text: 'Strong pricing hierarchy and easier product comparison on first view.' },
+const FEATURE_CARDS = [
+  {
+    icon: ShieldCheck,
+    title: 'Trusted listings',
+    text: 'A cleaner buying flow with reviewed marketplace inventory and clearer product presentation.',
+  },
+  {
+    icon: ScanSearch,
+    title: 'Faster sourcing',
+    text: 'Search boards, modules, and spare parts quickly without digging through cluttered screens.',
+  },
+  {
+    icon: Truck,
+    title: 'Local marketplace flow',
+    text: 'Built for buyers, sellers, and repair technicians who need a more practical sourcing experience.',
+  },
 ]
 
-const HIGHLIGHTS = [
-  'Top-rated circuit boards',
-  'Same-day inquiry flow',
-  'Bulk-friendly sourcing',
+const QUICK_LABELS = [
+  'Real spare-part listings',
+  'Cleaner marketplace search',
+  'Made for repair workflows',
 ]
 
 export default function Home() {
@@ -68,113 +80,105 @@ export default function Home() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[520px] bg-gradient-to-b from-brand-100/80 via-brand-50/40 to-transparent" />
-      <div className="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-brand-300/20 blur-3xl" />
-      <div className="pointer-events-none absolute right-0 top-12 h-96 w-96 rounded-full bg-[#ffd9c5] blur-3xl" />
+    <div className="relative min-h-screen overflow-hidden bg-[#f2f0ea]">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(242,240,234,0.4)_0%,rgba(242,240,234,0.92)_45%,#f2f0ea_100%)]" />
 
-      <div className="relative mx-auto max-w-7xl px-4 py-10 lg:py-14">
-        <section className="grid items-start gap-8 lg:grid-cols-[1.45fr_0.95fr]">
-          <div className="retail-panel mesh-card overflow-hidden p-7 md:p-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white/90 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.22em] text-brand-700">
-              <Sparkles size={14} className="text-brand-500" />
-              New marketplace look
-            </div>
+      <section className="relative isolate overflow-hidden border-b border-black/5 bg-[#181611] text-white">
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-90"
+          style={{ backgroundImage: "url('/image-bg.png')" }}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(242,85,31,0.25),transparent_32%),linear-gradient(115deg,rgba(17,15,12,0.92)_18%,rgba(17,15,12,0.70)_52%,rgba(17,15,12,0.86)_100%)]" />
 
-            <div className="mt-6 max-w-3xl">
-              <h1 className="text-4xl font-bold leading-none text-trust-900 md:text-6xl lg:text-7xl">
-                Find hot-selling
-                <span className="block gradient-text">electronics spares fast.</span>
+        <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-10 lg:grid-cols-[1.1fr_0.9fr] lg:py-16">
+          <div className="flex flex-col justify-between">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm">
+                <CircuitBoard size={14} className="text-brand-300" />
+                SpareGrid Marketplace
+              </div>
+
+              <h1 className="mt-8 max-w-4xl font-display text-5xl font-bold leading-[0.92] text-white md:text-7xl">
+                Spare parts,
+                <span className="block text-[#f7b28d]">without the messy marketplace feel.</span>
               </h1>
-              <p className="mt-5 max-w-2xl text-base leading-8 text-trust-600 md:text-lg">
-                SpareGrid now feels more like a modern retail marketplace: clearer deals, stronger product focus,
-                and a faster route from search to purchase.
+
+              <p className="mt-6 max-w-2xl text-base leading-8 text-white/72 md:text-lg">
+                A cleaner electronics spare-parts marketplace for buyers, sellers, and repair technicians who want to
+                search faster, compare better, and shop with more confidence.
               </p>
-            </div>
 
-            <form onSubmit={handleSearch} className="mt-8 rounded-[2rem] border border-[#f0dfd0] bg-white p-3 shadow-[0_20px_40px_rgba(18,21,33,0.08)]">
-              <div className="flex flex-col gap-3 md:flex-row md:items-center">
-                <div className="flex flex-1 items-center gap-3 rounded-[1.3rem] bg-[#fff8f2] px-4 py-4">
-                  <Search size={22} className="text-brand-500" />
-                  <input
-                    className="w-full bg-transparent text-base font-medium text-trust-900 placeholder:text-trust-300 focus:outline-none"
-                    placeholder="Search boards, modules, ICs, power supplies..."
-                    value={searchInput}
-                    onChange={(e) => setSearchInput(e.target.value)}
-                  />
-                </div>
-                <button type="submit" className="btn-primary px-8 py-4">
-                  <span>Search Deals</span>
-                </button>
-              </div>
-            </form>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              {HIGHLIGHTS.map((item) => (
-                <div
-                  key={item}
-                  className="inline-flex items-center gap-2 rounded-full border border-white bg-white/80 px-4 py-2 text-sm font-semibold text-trust-700 shadow-sm"
-                >
-                  <Star size={14} className="fill-brand-400 text-brand-400" />
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid gap-5">
-            <div className="retail-panel bg-trust-900 p-7 text-white">
-              <div className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-brand-300">
-                Marketplace pulse
-              </div>
-              <div className="mt-4 text-4xl font-bold font-display">24/7</div>
-              <p className="mt-3 max-w-sm text-sm leading-7 text-white/70">
-                Built to feel active, promotional, and easy to scan, inspired by large-scale retail marketplaces.
-              </p>
-              <div className="mt-6 grid grid-cols-2 gap-3">
-                <div className="rounded-2xl bg-white/10 p-4">
-                  <div className="text-2xl font-bold text-white">100%</div>
-                  <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/60">
-                    Buyer Protection
+              <form
+                onSubmit={handleSearch}
+                className="mt-8 max-w-3xl rounded-[2rem] border border-white/10 bg-white/95 p-3 shadow-[0_24px_64px_rgba(0,0,0,0.22)]"
+              >
+                <div className="flex flex-col gap-3 md:flex-row md:items-center">
+                  <div className="flex flex-1 items-center gap-3 rounded-[1.35rem] bg-[#f6f2eb] px-4 py-4">
+                    <Search size={22} className="text-brand-500" />
+                    <input
+                      className="w-full bg-transparent text-base font-medium text-trust-900 placeholder:text-trust-300 focus:outline-none"
+                      placeholder="Search TV boards, modules, power supplies..."
+                      value={searchInput}
+                      onChange={(e) => setSearchInput(e.target.value)}
+                    />
                   </div>
+                  <button type="submit" className="btn-primary px-8 py-4">
+                    Search Now
+                  </button>
                 </div>
-                <div className="rounded-2xl bg-white/10 p-4">
-                  <div className="text-2xl font-bold text-white">Bold</div>
-                  <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/60">
-                    Retail hierarchy
-                  </div>
-                </div>
-              </div>
-            </div>
+              </form>
 
-            <div className="retail-panel p-7">
-              <div className="mb-4 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.22em] text-brand-700">
-                <Store size={14} />
-                Why it works
-              </div>
-              <div className="space-y-4">
-                {TRUST_POINTS.map(({ icon: Icon, title, text }) => (
-                  <div key={title} className="flex gap-4 rounded-2xl bg-[#fff8f2] p-4">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white text-brand-600 shadow-sm">
-                      <Icon size={18} />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-bold text-trust-900">{title}</h3>
-                      <p className="mt-1 text-sm leading-6 text-trust-500">{text}</p>
-                    </div>
+              <div className="mt-7 flex flex-wrap gap-3">
+                {QUICK_LABELS.map((label) => (
+                  <div
+                    key={label}
+                    className="rounded-full border border-white/12 bg-white/8 px-4 py-2 text-sm font-semibold text-white/84 backdrop-blur-sm"
+                  >
+                    {label}
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        </section>
 
-        <section className="mt-8 retail-panel p-5 md:p-6">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <div className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-brand-700">Quick categories</div>
-              <h2 className="mt-2 text-2xl font-bold text-trust-900">Browse like a real marketplace</h2>
+          <div className="grid gap-4 self-end">
+            <div className="rounded-[2rem] border border-white/10 bg-white/8 p-6 backdrop-blur-md">
+              <div className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-brand-300">Marketplace feel</div>
+              <h2 className="mt-3 text-3xl font-bold text-white">A more grounded, realistic storefront.</h2>
+              <p className="mt-4 text-sm leading-7 text-white/68">
+                Less noise, better product focus, and a layout that feels closer to how real people browse for parts.
+              </p>
             </div>
+
+            <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              {FEATURE_CARDS.map(({ icon: Icon, title, text }) => (
+                <div key={title} className="rounded-[1.7rem] border border-white/10 bg-white/8 p-5 backdrop-blur-md">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-brand-300">
+                    <Icon size={18} />
+                  </div>
+                  <h3 className="mt-4 text-lg font-bold text-white">{title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-white/68">{text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="relative mx-auto max-w-7xl px-4 py-8 lg:py-12">
+        <section className="grid gap-6 lg:grid-cols-[0.74fr_1.26fr]">
+          <div className="rounded-[2rem] border border-black/5 bg-[#f7f4ee] p-7 shadow-[0_18px_54px_rgba(18,21,33,0.06)]">
+            <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.22em] text-brand-700">
+              <Store size={14} />
+              Browse better
+            </div>
+            <h2 className="mt-4 text-3xl font-bold text-trust-900">Search by category, then move fast.</h2>
+            <p className="mt-4 text-sm leading-7 text-trust-600">
+              Pick a category and narrow the listing feed without losing the calm, clean layout of the storefront.
+            </p>
+          </div>
+
+          <div className="rounded-[2rem] border border-black/5 bg-white/90 p-5 shadow-[0_18px_54px_rgba(18,21,33,0.06)] backdrop-blur-md md:p-6">
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map((cat) => (
                 <button
@@ -182,8 +186,8 @@ export default function Home() {
                   onClick={() => setCategory(cat)}
                   className={`rounded-full px-4 py-2.5 text-[11px] font-extrabold uppercase tracking-[0.18em] transition-all ${
                     category === cat
-                      ? 'bg-brand-500 text-white shadow-[0_16px_28px_rgba(242,85,31,0.22)]'
-                      : 'bg-[#fff7f0] text-trust-600 hover:bg-brand-50 hover:text-brand-700'
+                      ? 'bg-trust-900 text-white shadow-[0_14px_28px_rgba(18,21,33,0.18)]'
+                      : 'bg-[#f5eee4] text-trust-600 hover:bg-brand-50 hover:text-brand-700'
                   }`}
                 >
                   {cat}
@@ -196,15 +200,15 @@ export default function Home() {
         <section className="mt-10">
           <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <div className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-brand-700">Live listings</div>
-              <h2 className="mt-2 text-3xl font-bold text-trust-900">Today&apos;s storefront picks</h2>
+              <div className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-brand-700">Active listings</div>
+              <h2 className="mt-2 text-3xl font-bold text-trust-900">Parts ready to browse</h2>
               <p className="mt-2 text-sm text-trust-500">
-                {loading ? 'Refreshing product feed...' : `${products.length} items ready to browse`}
+                {loading ? 'Refreshing inventory...' : `${products.length} listings currently available`}
               </p>
             </div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-trust-600 shadow-sm">
-              <ArrowRight size={16} className="text-brand-500" />
-              Scroll the hottest spare-part listings
+            <div className="inline-flex items-center gap-2 rounded-full border border-black/5 bg-white px-4 py-2 text-sm font-semibold text-trust-600 shadow-sm">
+              <Layers3 size={16} className="text-brand-500" />
+              Cleaner feed, easier scanning
             </div>
           </div>
 
@@ -221,7 +225,7 @@ export default function Home() {
               </div>
               <h3 className="mt-6 text-2xl font-bold text-trust-900">No matching spares right now</h3>
               <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-trust-500">
-                Try a broader search or switch categories to uncover more active listings.
+                Try another search term or switch categories to see more available marketplace listings.
               </p>
             </div>
           ) : (
@@ -229,6 +233,19 @@ export default function Home() {
               {products.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           )}
+        </section>
+
+        <section className="mt-12 rounded-[2rem] border border-black/5 bg-[#14110d] px-6 py-8 text-white shadow-[0_22px_60px_rgba(18,21,33,0.12)] md:px-8">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <div className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-brand-300">SpareGrid</div>
+              <h2 className="mt-2 text-3xl font-bold text-white">A calmer marketplace for technical buyers and sellers.</h2>
+            </div>
+            <div className="inline-flex items-center gap-2 text-sm font-semibold text-white/78">
+              <ArrowRight size={16} className="text-brand-300" />
+              Search, compare, and source more comfortably
+            </div>
+          </div>
         </section>
       </div>
     </div>

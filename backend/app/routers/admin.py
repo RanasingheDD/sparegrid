@@ -4,12 +4,26 @@ from supabase import Client
 from typing import List, Optional
 from app.database import get_db
 from app.schemas.schemas import RequestOut, RequestStatusUpdate, OrderOut, OrderStatusUpdate, RequestStatus, UserRole, UserOut, ProductOut, ProductStatus, DeliveryStatus, UserEarningsUpdate
+from app.schemas.schemas import UserRestrictionUpdate
 from app.services.auth_service import require_role
-from app.services.email_service import send_order_status_email, send_product_review_email
+from app.services.email_service import send_order_status_email, send_product_review_email, send_seller_restriction_email
 from app.utils import ensure_list
+from app.policies import MARKETPLACE_POLICIES, calculate_order_total
 
 router = APIRouter()
 admin_only = require_role(UserRole.admin)
+
+
+def _maybe_send_restriction_email(user: dict) -> None:
+    try:
+        send_seller_restriction_email(
+            seller_email=user.get("email", ""),
+            seller_name=user.get("name", "Seller"),
+            reason=user.get("restriction_reason") or "Seller account restricted by SpareGrid",
+            failed_orders_count=int(user.get("failed_orders_count") or 0),
+        )
+    except Exception:
+        pass
 
 @router.get("/products", response_model=List[ProductOut])
 def get_all_products(
@@ -211,6 +225,8 @@ def get_all_orders(
             p_data["id"] = str(p_data["id"])
             p_data["images"] = ensure_list(p_data.get("images"))
             o_data["product"] = p_data
+            o_data["shipping_cost"] = MARKETPLACE_POLICIES["buyer_shipping_cost"]
+            o_data["total_cost"] = calculate_order_total(float(p_data.get("price") or 0), int(o_data.get("quantity") or 1))
             
         results.append(o_data)
         
@@ -226,6 +242,7 @@ def update_order_status(
     response = db.table("orders").select("*").eq("id", order_id).execute()
     if not response.data:
         raise HTTPException(status_code=404, detail="Order not found")
+    previous_order = response.data[0]
         
     update_dict = {"delivery_status": data.delivery_status.value}
     if data.tracking_notes:
@@ -233,7 +250,7 @@ def update_order_status(
         
     update_response = db.table("orders").update(update_dict).eq("id", order_id).execute()
     
-    o_data = update_response.data[0] if update_response.data else response.data[0]
+    o_data = update_response.data[0] if update_response.data else previous_order
     o_data["id"] = str(o_data["id"])
 
     # Stock Reduction Cascade
@@ -278,6 +295,21 @@ def update_order_status(
         except Exception:
             pass
 
+    if previous_order.get("delivery_status") != DeliveryStatus.rejected.value and data.delivery_status == DeliveryStatus.rejected:
+        seller_response = db.table("users").select("*").eq("id", o_data.get("seller_id")).execute()
+        if seller_response.data:
+            seller_data = seller_response.data[0]
+            failed_count = int(seller_data.get("failed_orders_count") or 0) + 1
+            seller_update = {"failed_orders_count": failed_count}
+            if failed_count >= MARKETPLACE_POLICIES["seller_restriction_after_failed_orders"]:
+                seller_update["is_restricted"] = True
+                seller_update["restriction_reason"] = (
+                    f"Restricted after {failed_count} failed orders. Seller cannot add new items until reviewed by SpareGrid."
+                )
+            seller_update_response = db.table("users").update(seller_update).eq("id", o_data.get("seller_id")).execute()
+            if seller_update_response.data and seller_update_response.data[0].get("is_restricted"):
+                _maybe_send_restriction_email(seller_update_response.data[0])
+
     return o_data
 
 @router.delete("/orders/{order_id}")
@@ -319,6 +351,27 @@ def update_user_earnings(
     
     u_data = response.data[0]
     u_data["id"] = str(u_data["id"])
+    return UserOut(**u_data)
+
+
+@router.put("/users/{user_id}/restriction", response_model=UserOut)
+def update_user_restriction(
+    user_id: str,
+    data: UserRestrictionUpdate,
+    db: Client = Depends(get_db),
+    _: UserOut = Depends(admin_only)
+):
+    update_dict = {
+        "is_restricted": data.is_restricted,
+        "restriction_reason": data.reason if data.is_restricted else None,
+    }
+    response = db.table("users").update(update_dict).eq("id", user_id).execute()
+    if not response.data:
+        raise HTTPException(status_code=404, detail="User not found")
+    u_data = response.data[0]
+    u_data["id"] = str(u_data["id"])
+    if u_data.get("is_restricted"):
+        _maybe_send_restriction_email(u_data)
     return UserOut(**u_data)
 
 @router.get("/stats")

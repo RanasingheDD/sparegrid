@@ -3,18 +3,26 @@ import { authAPI } from '../services/api'
 
 const AuthContext = createContext(null)
 
+function getStoredUser() {
+  try {
+    const stored = localStorage.getItem('user')
+    const token = localStorage.getItem('token')
+    return stored && token ? JSON.parse(stored) : null
+  } catch {
+    return null
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser]       = useState(null)
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState(() => getStoredUser())
+  const [loading, setLoading] = useState(false)
 
   // Restore session on page load
   useEffect(() => {
-    const stored = localStorage.getItem('user')
-    const token  = localStorage.getItem('token')
-    if (stored && token) {
-      setUser(JSON.parse(stored))
+    const restoredUser = getStoredUser()
+    if (restoredUser) {
+      setUser(restoredUser)
     }
-    setLoading(false)
   }, [])
 
   const login = async (email, password) => {

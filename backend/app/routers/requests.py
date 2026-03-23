@@ -6,6 +6,7 @@ from app.database import get_db
 from app.schemas.schemas import OrderOut, RequestCreate, ProductStatus, RequestStatus, UserOut, UserRole, DeliveryStatus
 from app.services.auth_service import get_current_user, require_role
 from app.services.email_service import send_new_order_notifications
+from app.policies import MARKETPLACE_POLICIES, calculate_order_total
 
 router = APIRouter()
 
@@ -40,6 +41,8 @@ def create_request(
     p_data["id"] = str(p_data["id"])
     if p_data.get("status") != ProductStatus.active.value:
         raise HTTPException(status_code=404, detail="Product not found or unavailable")
+    if float(p_data.get("price") or 0) <= MARKETPLACE_POLICIES["minimum_item_price"]:
+        raise HTTPException(status_code=400, detail="This product does not meet the marketplace minimum price policy")
 
     existing_response = db.table("orders")\
         .select("*")\
@@ -82,6 +85,8 @@ def create_request(
     
     new_order["buyer"] = current_user.model_dump()
     new_order["product"] = p_data
+    new_order["shipping_cost"] = MARKETPLACE_POLICIES["buyer_shipping_cost"]
+    new_order["total_cost"] = calculate_order_total(float(p_data.get("price") or 0), int(new_order.get("quantity") or 1))
     
     return new_order
 
@@ -105,6 +110,8 @@ def my_orders(
             p_data = product_response.data[0]
             p_data["id"] = str(p_data["id"])
             o_data["product"] = p_data
+            o_data["shipping_cost"] = MARKETPLACE_POLICIES["buyer_shipping_cost"]
+            o_data["total_cost"] = calculate_order_total(float(p_data.get("price") or 0), int(o_data.get("quantity") or 1))
             
         results.append(o_data)
         

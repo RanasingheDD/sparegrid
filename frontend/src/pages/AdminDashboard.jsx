@@ -118,6 +118,36 @@ export default function AdminDashboard() {
     }
   }
 
+  const toggleRestriction = async (user) => {
+    try {
+      const nextRestricted = !user.is_restricted
+      let reason = null
+
+      if (nextRestricted) {
+        const enteredReason = window.prompt(
+          'Enter the reason for restricting this seller account:',
+          user.restriction_reason || 'Seller account restricted by SpareGrid admin due to policy violations or failed orders.'
+        )
+
+        if (enteredReason === null) {
+          return
+        }
+
+        reason = enteredReason.trim()
+        if (!reason) {
+          toast.error('Restriction reason is required.')
+          return
+        }
+      }
+
+      await adminAPI.updateUserRestriction(user.id, nextRestricted, reason)
+      toast.success(nextRestricted ? 'Seller account restricted and email notification sent.' : 'Seller restriction removed.')
+      loadUsers()
+    } catch {
+      toast.error('Failed to update seller restriction.')
+    }
+  }
+
   // Local Memoized Filters
   const filteredProducts = useMemo(() => {
     if (!searchTerm) return products
@@ -346,6 +376,7 @@ export default function AdminDashboard() {
                           <th className="px-6 py-5">Access</th>
                           <th className="px-6 py-5">Communication</th>
                           <th className="px-6 py-5 text-right">Earnings (LKR)</th>
+                          <th className="px-6 py-5">Restriction</th>
                           <th className="px-8 py-5 text-right">Actions</th>
                         </tr>
                       </thead>
@@ -376,11 +407,29 @@ export default function AdminDashboard() {
                                 className="w-28 bg-trust-50 border border-trust-100 rounded-lg px-3 py-1.5 text-xs font-mono font-bold text-right focus:border-brand-300 outline-none text-brand-600"
                               />
                             </td>
+                            <td className="px-6 py-5">
+                              {u.role !== 'admin' ? (
+                                <button
+                                  onClick={() => toggleRestriction(u)}
+                                  className={`px-3 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition ${
+                                    u.is_restricted
+                                      ? 'bg-red-50 text-red-700 border border-red-200 hover:bg-red-100'
+                                      : 'bg-trust-50 text-trust-700 border border-trust-200 hover:border-brand-300'
+                                  }`}
+                                >
+                                  {u.is_restricted ? 'Restricted' : 'Restrict Seller'}
+                                </button>
+                              ) : (
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-trust-300">N/A</span>
+                              )}
+                            </td>
                             <td className="px-8 py-5 text-right">
                               {u.role !== 'admin' && (
-                                <button onClick={() => deleteUser(u.id)} className="p-2 text-trust-200 hover:bg-red-50 hover:text-red-600 rounded-xl transition" title="Delete User">
-                                  <Trash2 size={16} />
-                                </button>
+                                <div className="flex items-center justify-end gap-2">
+                                  <button onClick={() => deleteUser(u.id)} className="p-2 text-trust-200 hover:bg-red-50 hover:text-red-600 rounded-xl transition" title="Delete User">
+                                    <Trash2 size={16} />
+                                  </button>
+                                </div>
                               )}
                             </td>
                           </tr>

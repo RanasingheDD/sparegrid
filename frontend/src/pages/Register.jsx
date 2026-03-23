@@ -2,27 +2,34 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import toast from 'react-hot-toast'
-import { Store, BadgePercent, ShieldCheck } from 'lucide-react'
+import { Store, BadgePercent, ShieldCheck, Eye, EyeOff } from 'lucide-react'
 
 export default function Register() {
   const { register } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({
-    name: '', email: '', password: '', role: 'user',
+    name: '', email: '', password: '', confirmPassword: '', role: 'user',
     phone: '', phone2: '', address: ''
   })
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (form.password !== form.confirmPassword) {
+      toast.error('Password and confirm password must match.')
+      return
+    }
     if (!agreedToTerms) {
       toast.error('You must agree to the Terms & Conditions to create an account.')
       return
     }
     setLoading(true)
     try {
-      await register(form)
+      const { confirmPassword, ...payload } = form
+      await register(payload)
       toast.success('Your account is ready. Please log in.')
       navigate('/login')
     } catch (err) {
@@ -113,7 +120,46 @@ export default function Register() {
 
             <div>
               <label className="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.18em] text-trust-400">Password</label>
-              <input type="password" className="input" placeholder="Minimum 8 characters" required minLength={8} {...field('password')} />
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  className="input pr-12"
+                  placeholder="Minimum 8 characters"
+                  required
+                  minLength={8}
+                  {...field('password')}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-0 flex items-center px-4 text-trust-400 hover:text-trust-700"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.18em] text-trust-400">Confirm Password</label>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  className="input pr-12"
+                  placeholder="Retype your password"
+                  required
+                  minLength={8}
+                  {...field('confirmPassword')}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-0 flex items-center px-4 text-trust-400 hover:text-trust-700"
+                  aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                >
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </div>
 
             <div className="flex items-start gap-3 pt-1">

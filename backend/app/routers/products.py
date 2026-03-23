@@ -11,6 +11,7 @@ from fastapi import UploadFile, File
 import json
 
 from app.utils import ensure_list
+from app.policies import MARKETPLACE_POLICIES
 
 router = APIRouter()
 
@@ -84,6 +85,13 @@ def create_product(
     db: Client = Depends(get_db),
     current_user: UserOut = Depends(require_role(UserRole.user, UserRole.admin))
 ):
+    if current_user.is_restricted:
+        raise HTTPException(status_code=403, detail=current_user.restriction_reason or "Your seller account is restricted")
+    if data.price <= MARKETPLACE_POLICIES["minimum_item_price"]:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Item price must be greater than LKR {MARKETPLACE_POLICIES['minimum_item_price']}",
+        )
     product_data = data.model_dump()
     product_data["seller_id"] = str(current_user.id)
     product_data["stock_count"] = data.stock_count
@@ -157,6 +165,11 @@ def update_product(
         raise HTTPException(status_code=403, detail="Not authorized")
         
     update_data = data.model_dump(exclude_unset=True)
+    if "price" in update_data and update_data["price"] is not None and update_data["price"] <= MARKETPLACE_POLICIES["minimum_item_price"]:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Item price must be greater than LKR {MARKETPLACE_POLICIES['minimum_item_price']}",
+        )
     if "status" in update_data and isinstance(update_data["status"], ProductStatus):
         update_data["status"] = update_data["status"].value
     
