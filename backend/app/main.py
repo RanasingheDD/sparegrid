@@ -6,7 +6,7 @@ app = FastAPI(title="LankaParts API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://sparegrid.vercel.app","http://localhost:5173"],
+    allow_origins=["https://lankaparts.vercel.app","http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

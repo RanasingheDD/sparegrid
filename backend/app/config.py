@@ -15,9 +15,9 @@ class Settings(BaseSettings):
     # Email notifications
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
-    SMTP_USERNAME: str = "support.pankaparts@gmail.com"
+    SMTP_USERNAME: str = "support.lankaparts@gmail.com"
     SMTP_PASSWORD: str = "dyyb rpdn ltvy xcjr"
-    SUPPORT_EMAIL: str = "support.pankaparts@gmail.com"
+    SUPPORT_EMAIL: str = "support.lankaparts@gmail.com"
 
     class Config:
         env_file = ".env"
