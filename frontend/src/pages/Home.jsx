@@ -95,7 +95,7 @@ export default function Home() {
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/8 px-4 py-2 text-[11px] font-extrabold uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm">
                 <CircuitBoard size={14} className="text-brand-300" />
-                SpareGrid Marketplace
+                LankaParts Marketplace
               </div>
 
               <h1 className="mt-8 max-w-4xl font-display text-5xl font-bold leading-[0.92] text-white md:text-7xl">
@@ -238,7 +238,12 @@ export default function Home() {
         <section className="mt-12 rounded-[2rem] border border-black/5 bg-[#14110d] px-6 py-8 text-white shadow-[0_22px_60px_rgba(18,21,33,0.12)] md:px-8">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
-              <div className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-brand-300">SpareGrid</div>
+              <div className="flex items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-white/10 shadow-[0_16px_36px_rgba(0,0,0,0.18)] backdrop-blur-md sm:h-20 sm:w-20">
+                  <img src="/logo.png" alt="LankaParts logo" className="h-full w-full object-cover" />
+                </div>
+                <div className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-brand-300">LankaParts</div>
+              </div>
               <h2 className="mt-2 text-3xl font-bold text-white">A calmer marketplace for technical buyers and sellers.</h2>
             </div>
             <div className="inline-flex items-center gap-2 text-sm font-semibold text-white/78">

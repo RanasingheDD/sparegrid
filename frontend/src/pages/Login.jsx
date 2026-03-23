@@ -58,7 +58,7 @@ export default function Login() {
               <Store size={26} />
             </div>
             <h1 className="text-3xl font-bold text-trust-900">Welcome back</h1>
-            <p className="mt-2 text-sm text-trust-500">Sign in to continue buying and selling on SpareGrid.</p>
+            <p className="mt-2 text-sm text-trust-500">Sign in to continue buying and selling on LankaParts.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="card p-8 space-y-6">

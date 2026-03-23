@@ -22,20 +22,19 @@ export default function TermsAndConditions() {
         </div>
         <div>
           <h1 className="text-4xl font-display font-bold text-trust-900">Terms &amp; Conditions</h1>
-          <p className="text-trust-400 font-body text-sm mt-1">SpareGrid Marketplace — Effective: March 23, 2026</p>
+          <p className="text-trust-400 font-body text-sm mt-1">LankaParts Marketplace - Effective: March 23, 2026</p>
         </div>
       </div>
 
       <div className="space-y-8 font-body text-trust-700 text-sm leading-relaxed">
-
         <section>
           <h2 className="text-lg font-display font-bold text-trust-900 mb-3">1. Acceptance of Terms</h2>
-          <p>By creating an account on SpareGrid, you agree to be bound by these Terms and Conditions. If you do not agree to any part of these terms, you must not use the platform. SpareGrid reserves the right to update these terms at any time, and continued use of the platform constitutes acceptance of the revised terms.</p>
+          <p>By creating an account on LankaParts, you agree to be bound by these Terms and Conditions. If you do not agree to any part of these terms, you must not use the platform. LankaParts reserves the right to update these terms at any time, and continued use of the platform constitutes acceptance of the revised terms.</p>
         </section>
 
         <section>
           <h2 className="text-lg font-display font-bold text-trust-900 mb-3">2. User Eligibility</h2>
-          <p>You must be at least 18 years of age to register and use SpareGrid. By registering, you confirm that all information you provide is accurate, current, and complete. You are solely responsible for maintaining the confidentiality of your account credentials.</p>
+          <p>You must be at least 18 years of age to register and use LankaParts. By registering, you confirm that all information you provide is accurate, current, and complete. You are solely responsible for maintaining the confidentiality of your account credentials.</p>
         </section>
 
         <section>
@@ -43,11 +42,10 @@ export default function TermsAndConditions() {
           <ul className="list-disc list-outside ml-5 space-y-2">
             {(policies?.terms_sections?.find(section => section.title === 'Seller Rules')?.items || [
               'Only items priced above LKR 1,000 are accepted on the platform.',
-              'Listings are reviewed by SpareGrid before they go live.',
-              'The seller must pay the shipping cost when sending an item to the SpareGrid warehouse.',
-              'Seller must ship within 48 hours after SpareGrid confirms the order.',
-              'Payments are released after SpareGrid verifies the part, and payout handling happens on Fridays.',
-
+              'Listings are reviewed by LankaParts before they go live.',
+              'The seller must pay the shipping cost when sending an item to the LankaParts warehouse.',
+              'Seller must ship within 48 hours after LankaParts confirms the order.',
+              'Payments are released after LankaParts verifies the part, and payout handling happens on Fridays.',
             ]).map((item) => (
               <li key={item}>{item}</li>
             ))}
@@ -61,7 +59,7 @@ export default function TermsAndConditions() {
               'Every order includes a shipping charge of LKR 450.',
               'The total payable amount is item price plus the shipping charge.',
               'Buyers should provide a correct shipping address before placing the order.',
-              'SpareGrid reviews and coordinates delivery for each order.',
+              'LankaParts reviews and coordinates delivery for each order.',
             ]).map((item) => (
               <li key={item}>{item}</li>
             ))}
@@ -69,15 +67,15 @@ export default function TermsAndConditions() {
         </section>
 
         <section>
-          <h2 className="text-lg font-display font-bold text-trust-900 mb-3">5. Brokerage & Payment</h2>
+          <h2 className="text-lg font-display font-bold text-trust-900 mb-3">5. Brokerage &amp; Payment</h2>
           <p>
-            SpareGrid operates as an intermediary platform. All transactions are facilitated and secured by the SpareGrid team. Seller earnings are released only after part verification, and payout handling is processed every {policies?.seller_payout_day || 'Friday'}.
+            LankaParts operates as an intermediary platform. All transactions are facilitated and secured by the LankaParts team. Seller earnings are released only after part verification, and payout handling is processed every {policies?.seller_payout_day || 'Friday'}.
           </p>
           <p className="mt-3">
-            Sellers are responsible for paying the shipping cost to send items to the SpareGrid warehouse.
+            Sellers are responsible for paying the shipping cost to send items to the LankaParts warehouse.
           </p>
           <p className="mt-3">
-            If a buyer rejects the part, SpareGrid returns it and charges LKR {policies?.failed_order_return_service_charge?.toLocaleString?.() || '480'}.
+            If a buyer rejects the part, LankaParts returns it and charges LKR {policies?.failed_order_return_service_charge?.toLocaleString?.() || '480'}.
           </p>
         </section>
 
@@ -85,7 +83,7 @@ export default function TermsAndConditions() {
           <h2 className="text-lg font-display font-bold text-trust-900 mb-3">6. Prohibited Activities</h2>
           <ul className="list-disc list-outside ml-5 space-y-2">
             <li>Listing counterfeit, stolen, or hazardous goods.</li>
-            <li>Attempting to conduct transactions outside of the SpareGrid platform.</li>
+            <li>Attempting to conduct transactions outside of the LankaParts platform.</li>
             <li>Providing false information in your profile or listings.</li>
             <li>Harassing other users or platform staff.</li>
             <li>Attempting to reverse engineer or compromise the platform's security.</li>
@@ -94,24 +92,23 @@ export default function TermsAndConditions() {
 
         <section>
           <h2 className="text-lg font-display font-bold text-trust-900 mb-3">7. Limitation of Liability</h2>
-          <p>SpareGrid provides a marketplace platform and is not responsible for the quality, safety, or legality of items listed by third-party sellers. While we strive to ensure platform security, SpareGrid is not liable for any indirect, incidental, or consequential damages arising from the use of the platform.</p>
+          <p>LankaParts provides a marketplace platform and is not responsible for the quality, safety, or legality of items listed by third-party sellers. While we strive to ensure platform security, LankaParts is not liable for any indirect, incidental, or consequential damages arising from the use of the platform.</p>
         </section>
 
         <section>
           <h2 className="text-lg font-display font-bold text-trust-900 mb-3">8. Privacy</h2>
-          <p>Your personal information (name, phone, address, bank details) is used solely for facilitating transactions and verifying identity on the SpareGrid platform. We do not sell your data to third parties. Seller contact details are kept private and never shared directly with buyers.</p>
+          <p>Your personal information (name, phone, address, bank details) is used solely for facilitating transactions and verifying identity on the LankaParts platform. We do not sell your data to third parties. Seller contact details are kept private and never shared directly with buyers.</p>
         </section>
 
         <section>
           <h2 className="text-lg font-display font-bold text-trust-900 mb-3">9. Account Termination</h2>
-          <p>SpareGrid reserves the right to suspend or permanently terminate any account that violates these terms, without prior warning. Users may also request account deletion by contacting our support team.</p>
+          <p>LankaParts reserves the right to suspend or permanently terminate any account that violates these terms, without prior warning. Users may also request account deletion by contacting our support team.</p>
         </section>
 
         <section>
           <h2 className="text-lg font-display font-bold text-trust-900 mb-3">10. Contact</h2>
-          <p>For any queries regarding these terms, please reach out to the SpareGrid support team via the contact details provided on the platform. We are available Monday–Saturday, 9 AM–6 PM.</p>
+          <p>For any queries regarding these terms, please reach out to the LankaParts support team via the contact details provided on the platform. We are available Monday-Saturday, 9 AM-6 PM.</p>
         </section>
-
       </div>
 
       <div className="mt-12 p-6 bg-trust-50 rounded-3xl border border-trust-100 text-center">

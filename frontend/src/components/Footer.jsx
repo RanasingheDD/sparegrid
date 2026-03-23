@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Package, Mail, Phone, MapPin, ArrowUpRight, ShieldCheck, Truck } from 'lucide-react'
+import { Mail, Phone, MapPin, ArrowUpRight, ShieldCheck, Truck } from 'lucide-react'
 
 const LINKS = {
   Discover: [
@@ -25,12 +25,12 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-14">
         <div className="grid gap-10 lg:grid-cols-[1.6fr_repeat(3,1fr)]">
           <div>
-            <Link to="/" className="mb-6 flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-500 text-white shadow-[0_16px_36px_rgba(242,85,31,0.28)]">
-                <Package size={22} />
+            <Link to="/" className="mb-6 flex items-center gap-4">
+              <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_16px_36px_rgba(242,85,31,0.18)] sm:h-20 sm:w-20">
+                <img src="/logo.png" alt="LankaParts logo" className="h-full w-full object-cover" />
               </div>
               <div>
-                <div className="font-display text-2xl font-bold">SpareGrid</div>
+                <div className="font-display text-2xl font-bold">LankaParts</div>
                 <div className="text-[10px] font-extrabold uppercase tracking-[0.24em] text-brand-300">
                   Marketplace Energy
                 </div>
@@ -62,7 +62,7 @@ export default function Footer() {
             <ul className="mt-6 space-y-3 text-sm text-white/70">
               <li className="flex items-center gap-3">
                 <Mail size={15} className="text-brand-300" />
-                <span>suport.sparegrid@gmail.com</span>
+                <span>support.lankaparts.@gmail.com</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone size={15} className="text-brand-300" />
@@ -98,7 +98,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/50 sm:flex-row sm:items-center">
-          <p>© {new Date().getFullYear()} SpareGrid. Built for faster spare-part commerce.</p>
+          <p>© {new Date().getFullYear()} LankaParts. Built for faster spare-part commerce.</p>
           <p className="font-semibold uppercase tracking-[0.18em] text-brand-300">Always on marketplace</p>
         </div>
       </div>

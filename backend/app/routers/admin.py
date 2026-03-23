@@ -19,7 +19,7 @@ def _maybe_send_restriction_email(user: dict) -> None:
         send_seller_restriction_email(
             seller_email=user.get("email", ""),
             seller_name=user.get("name", "Seller"),
-            reason=user.get("restriction_reason") or "Seller account restricted by SpareGrid",
+            reason=user.get("restriction_reason") or "Seller account restricted by LankaParts",
             failed_orders_count=int(user.get("failed_orders_count") or 0),
         )
     except Exception:
@@ -304,7 +304,7 @@ def update_order_status(
             if failed_count >= MARKETPLACE_POLICIES["seller_restriction_after_failed_orders"]:
                 seller_update["is_restricted"] = True
                 seller_update["restriction_reason"] = (
-                    f"Restricted after {failed_count} failed orders. Seller cannot add new items until reviewed by SpareGrid."
+                    f"Restricted after {failed_count} failed orders. Seller cannot add new items until reviewed by LankaParts."
                 )
             seller_update_response = db.table("users").update(seller_update).eq("id", o_data.get("seller_id")).execute()
             if seller_update_response.data and seller_update_response.data[0].get("is_restricted"):

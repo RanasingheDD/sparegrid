@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Package, LayoutDashboard, LogOut, ChevronRight, ShieldCheck, Flame } from 'lucide-react'
+import { LayoutDashboard, LogOut, ChevronRight, ShieldCheck, Flame } from 'lucide-react'
 
 const DASHBOARD_ROUTES = {
   buyer: '/dashboard',
@@ -34,12 +34,12 @@ export default function Navbar() {
       </div>
 
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
-        <Link to="/" className="flex items-center gap-3 group min-w-0">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-[0_14px_32px_rgba(242,85,31,0.28)] transition-transform duration-300 group-hover:scale-105">
-            <Package size={22} />
+        <Link to="/" className="flex items-center gap-4 group min-w-0">
+          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_14px_32px_rgba(242,85,31,0.18)] transition-transform duration-300 group-hover:scale-105 sm:h-20 sm:w-20">
+            <img src="/logo.png" alt="LankaParts logo" className="h-full w-full object-cover" />
           </div>
           <div className="min-w-0">
-            <div className="font-display text-2xl font-bold text-trust-900">SpareGrid</div>
+            <div className="font-display text-3xl font-bold text-trust-900 sm:text-4xl">LankaParts</div>
             <div className="text-[10px] font-extrabold uppercase tracking-[0.24em] text-brand-600">
               Parts. Boards. Modules.
             </div>

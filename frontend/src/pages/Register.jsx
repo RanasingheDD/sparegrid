@@ -78,7 +78,7 @@ export default function Register() {
               <Store size={26} />
             </div>
             <h2 className="text-3xl font-bold text-trust-900">Create account</h2>
-            <p className="mt-2 text-sm text-trust-500">Set up your profile and start listing parts on SpareGrid.</p>
+            <p className="mt-2 text-sm text-trust-500">Set up your profile and start listing parts on LankaParts.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="card space-y-5 p-8">
@@ -175,7 +175,7 @@ export default function Register() {
                 <Link to="/terms" target="_blank" className="font-bold text-brand-600 underline underline-offset-2 hover:text-brand-700">
                   Terms &amp; Conditions
                 </Link>
-                {' '}for using SpareGrid.
+                {' '}for using LankaParts.
               </label>
             </div>
 

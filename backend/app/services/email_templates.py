@@ -4,7 +4,7 @@ from app.schemas.schemas import DeliveryStatus, ProductStatus
 from app.policies import MARKETPLACE_POLICIES, calculate_order_total
 
 
-SUPPORT_EMAIL = "suport.sparegrid@gmail.com"
+SUPPORT_EMAIL = "support.lankaparts@gmail.com"
 SITE_URL = "https://sparegrid.vercel.app"
 
 
@@ -27,7 +27,7 @@ def _render_email(title: str, intro: str, sections: list[tuple[str, str]], closi
             """
         )
 
-    text_parts.extend(["", closing, "", f"Support: {SUPPORT_EMAIL}", "SpareGrid Team"])
+    text_parts.extend(["", closing, "", f"Support: {SUPPORT_EMAIL}", "LankaParts Team"])
     text_body = "\n".join(text_parts)
 
     html_body = f"""
@@ -40,9 +40,9 @@ def _render_email(title: str, intro: str, sections: list[tuple[str, str]], closi
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px; background:#ffffff; border-radius:24px; overflow:hidden; box-shadow:0 16px 48px rgba(18, 32, 51, 0.08);">
                 <tr>
                   <td style="padding:28px 32px; background:linear-gradient(135deg, #f2551f 0%, #ff8a3d 100%); color:#ffffff;">
-                    <div style="font-size:12px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; opacity:0.9; margin-bottom:10px;">SpareGrid</div>
+                    <div style="font-size:12px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; opacity:0.9; margin-bottom:10px;">LankaParts</div>
                     <div style="font-size:32px; font-weight:800; line-height:1;"></div>
-                    <div style="font-size:14px; opacity:0.92; margin-top:10px;">Professional marketplace updates from the SpareGrid team</div>
+                    <div style="font-size:14px; opacity:0.92; margin-top:10px;">Professional marketplace updates from the LankaParts team</div>
                   </td>
                 </tr>
                 <tr>
@@ -59,11 +59,11 @@ def _render_email(title: str, intro: str, sections: list[tuple[str, str]], closi
                 </tr>
                 <tr>
                   <td style="padding:24px 32px; border-top:1px solid #e7edf5; background:#fbfcfe;">
-                    <div style="font-size:14px; font-weight:700; color:#122033; margin-bottom:6px;">SpareGrid Support</div>
+                    <div style="font-size:14px; font-weight:700; color:#122033; margin-bottom:6px;">LankaParts Support</div>
                     <div style="font-size:13px; line-height:1.6; color:#6a7787;">Email: {escape(SUPPORT_EMAIL)}</div>
                     <div style="font-size:13px; line-height:1.6; color:#6a7787;">Website: {escape(SITE_URL)}</div>
                     <div style="font-size:12px; line-height:1.6; color:#95a0af; margin-top:12px;">
-                      This is an automated SpareGrid notification. Please contact support if you need assistance.
+                      This is an automated LankaParts notification. Please contact support if you need assistance.
                     </div>
                   </td>
                 </tr>
@@ -78,13 +78,13 @@ def _render_email(title: str, intro: str, sections: list[tuple[str, str]], closi
 
 
 def welcome_email(name: str) -> tuple[str, str, str]:
-    subject = "Welcome to SpareGrid"
+    subject = "Welcome to LankaParts"
     text, html = _render_email(
-        title="Welcome to SpareGrid",
+        title="Welcome to LankaParts",
         intro=f"Hello {name}, your account has been created successfully.",
         sections=[
             ("What you can do next", "Browse products, place orders, and manage your marketplace activity."),
-            ("Account status", "Your SpareGrid account is now active."),
+            ("Account status", "Your LankaParts account is now active."),
         ],
         closing="If you need any assistance, our support team will be happy to help.",
     )
@@ -100,10 +100,10 @@ def new_order_admin_email(
     shipping_address: str,
     item_cost: float,
 ) -> tuple[str, str, str]:
-    subject = f"New SpareGrid Order: {order_id}"
+    subject = f"New LankaParts Order: {order_id}"
     text, html = _render_email(
         title="A new order has been placed",
-        intro="A customer has submitted a new order that requires SpareGrid review.",
+        intro="A customer has submitted a new order that requires LankaParts review.",
         sections=[
             ("Order ID", order_id),
             ("Buyer", buyer_name),
@@ -126,10 +126,10 @@ def new_order_buyer_email(
     shipping_address: str,
     item_cost: float,
 ) -> tuple[str, str, str]:
-    subject = f"Your SpareGrid Order Has Been Received: {order_id}"
+    subject = f"Your LankaParts Order Has Been Received: {order_id}"
     text, html = _render_email(
         title="Your order has been received",
-        intro=f"Hello {name}, thank you for placing your order with SpareGrid.",
+        intro=f"Hello {name}, thank you for placing your order with LankaParts.",
         sections=[
             ("Order ID", order_id),
             ("Product", product_title),
@@ -152,7 +152,7 @@ def new_product_admin_email(
     price: float,
     category: str,
 ) -> tuple[str, str, str]:
-    subject = f"New SpareGrid Product Submitted: {title}"
+    subject = f"New LankaParts Product Submitted: {title}"
     text, html = _render_email(
         title="A new product needs review",
         intro="A seller has submitted a product listing for marketplace approval.",
@@ -170,7 +170,7 @@ def new_product_admin_email(
 
 
 def new_product_seller_email(name: str, title: str, price: float, category: str) -> tuple[str, str, str]:
-    subject = f"Your SpareGrid Listing Has Been Submitted: {title}"
+    subject = f"Your LankaParts Listing Has Been Submitted: {title}"
     agreement_lines = "\n".join(f"- {line}" for line in MARKETPLACE_POLICIES["seller_agreement"])
     text, html = _render_email(
         title="Your listing is pending review",
@@ -181,17 +181,17 @@ def new_product_seller_email(name: str, title: str, price: float, category: str)
             ("Price", f"LKR {price:,.2f}"),
             ("Seller Service Agreement", agreement_lines),
         ],
-        closing="We will notify you as soon as the SpareGrid team approves or rejects the listing.",
+        closing="We will notify you as soon as the LankaParts team approves or rejects the listing.",
     )
     return subject, text, html
 
 
 def product_review_email(name: str, title: str, status: ProductStatus, item_cost: float) -> tuple[str, str, str]:
     approved = status == ProductStatus.active
-    subject = f"Your SpareGrid Listing Was {'Approved' if approved else 'Rejected'}: {title}"
+    subject = f"Your LankaParts Listing Was {'Approved' if approved else 'Rejected'}: {title}"
     text, html = _render_email(
         title=f"Listing {'approved' if approved else 'rejected'}",
-        intro=f"Hello {name}, the SpareGrid team has completed the review of your listing.",
+        intro=f"Hello {name}, the LankaParts team has completed the review of your listing.",
         sections=[
             ("Listing", title),
             ("Status", "Approved" if approved else "Rejected"),
@@ -228,7 +228,7 @@ def order_status_email(
     if tracking_notes:
         additional_note = f"{additional_note}\nAdmin Notes: {tracking_notes}".strip()
 
-    subject = f"SpareGrid Order Update: {order_id}"
+    subject = f"LankaParts Order Update: {order_id}"
     text, html = _render_email(
         title="Order status update",
         intro=f"Hello {name}, {status_line}",
@@ -241,21 +241,21 @@ def order_status_email(
             ("Status", status_label),
             ("Additional Information", additional_note or "No additional notes at this time."),
         ],
-        closing="Please contact SpareGrid support if you need any assistance regarding this order.",
+        closing="Please contact LankaParts support if you need any assistance regarding this order.",
     )
     return subject, text, html
 
 
 def seller_restriction_email(name: str, reason: str, failed_orders_count: int) -> tuple[str, str, str]:
-    subject = "Your SpareGrid Seller Account Has Been Restricted"
+    subject = "Your LankaParts Seller Account Has Been Restricted"
     text, html = _render_email(
         title="Seller account restricted",
-        intro=f"Hello {name}, your seller account has been restricted on SpareGrid.",
+        intro=f"Hello {name}, your seller account has been restricted on LankaParts.",
         sections=[
             ("Failed Orders Recorded", str(failed_orders_count)),
             ("Reason", reason),
             ("Account Impact", "You cannot add new items to the platform while this restriction is active."),
         ],
-        closing="Please contact SpareGrid support if you would like assistance or a review of this restriction.",
+        closing="Please contact LankaParts support if you would like assistance or a review of this restriction.",
     )
     return subject, text, html

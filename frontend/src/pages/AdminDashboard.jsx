@@ -126,7 +126,7 @@ export default function AdminDashboard() {
       if (nextRestricted) {
         const enteredReason = window.prompt(
           'Enter the reason for restricting this seller account:',
-          user.restriction_reason || 'Seller account restricted by SpareGrid admin due to policy violations or failed orders.'
+          user.restriction_reason || 'Seller account restricted by LankaParts admin due to policy violations or failed orders.'
         )
 
         if (enteredReason === null) {
@@ -184,7 +184,7 @@ export default function AdminDashboard() {
              <h1 className="text-2xl text-white font-display tracking-tight">Platform Command</h1>
           </div>
           <p className="text-trust-100/60 font-body text-sm mb-10 max-w-xl">
-             Comprehensive administrative oversight. Manage the SpareGrid ecosystem with precision and security.
+             Comprehensive administrative oversight. Manage the LankaParts ecosystem with precision and security.
           </p>
           {stats && (
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

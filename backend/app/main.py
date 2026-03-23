@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routers import auth, products, requests, admin, orders, policies
 
-app = FastAPI(title="SpareGrid API", version="1.0.0")
+app = FastAPI(title="LankaParts API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,4 +21,4 @@ app.include_router(policies.router, prefix="/policies", tags=["Policies"])
 
 @app.get("/")
 def root():
-    return {"message": "SpareGrid API is running"}
+    return {"message": "LankaParts API is running"}
