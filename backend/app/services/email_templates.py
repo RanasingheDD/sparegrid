@@ -5,7 +5,7 @@ from app.policies import MARKETPLACE_POLICIES, calculate_order_total
 
 
 SUPPORT_EMAIL = "support.lankaparts@gmail.com"
-SITE_URL = "https://sparegrid.vercel.app"
+SITE_URL = "https://lankaparts.live"
 
 
 def _render_email(title: str, intro: str, sections: list[tuple[str, str]], closing: str) -> tuple[str, str]:

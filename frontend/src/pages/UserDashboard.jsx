@@ -111,8 +111,8 @@ export default function UserDashboard() {
           toast.error(activeUser.restriction_reason || 'Your seller account is restricted')
           return
         }
-        if (products.length === 0 && !agreementAccepted) {
-          toast.error('Please accept the seller service agreement before posting your first product')
+        if (!agreementAccepted) {
+          toast.error('Please accept the seller service agreement before posting this item')
           return
         }
       }
@@ -236,9 +236,6 @@ export default function UserDashboard() {
   const minimumItemPrice = costs.minimumItemPrice
   const shippingCost = costs.buyerShippingCost
   const failedOrderFee = costs.failedOrderReturnServiceCharge
-  const sellerFailedLimit = costs.sellerRestrictionAfterFailedOrders
-  const sellerShipHours = costs.sellerShipWithinHours
-  const sellerPayoutDay = costs.sellerPayoutDay
 
   if (!activeUser) return null
 
@@ -562,13 +559,16 @@ export default function UserDashboard() {
 
                         <div className="rounded-2xl bg-white/80 border border-brand-100 px-4 py-4">
                           <p className="text-[10px] uppercase font-bold tracking-widest text-brand-700 mb-3">Seller Service Agreement</p>
-                          <div className="space-y-2 text-xs text-trust-700 leading-relaxed">
-                            <p>Seller must ship within {sellerShipHours} hours.</p>
-                            <p>Payment is released after LankaParts verifies the part.</p>
-                            <p>Payment handling is done on {sellerPayoutDay}s.</p>
-                            <p>After {sellerFailedLimit} failed orders, the seller account is restricted.</p>
-                          </div>
-                          {products.length === 0 && (
+                          {!editingId && (
+                            <p className="text-xs text-trust-700 leading-relaxed">
+                              Review the seller service agreement before posting this item.
+                              {' '}
+                              <Link to="/terms" className="font-semibold text-brand-700 hover:text-brand-800 underline underline-offset-2">
+                                View terms and conditions
+                              </Link>
+                            </p>
+                          )}
+                          {!editingId && (
                             <label className="mt-4 flex items-start gap-3 text-xs text-trust-700 cursor-pointer">
                               <input
                                 type="checkbox"
@@ -576,7 +576,7 @@ export default function UserDashboard() {
                                 onChange={(e) => setAgreementAccepted(e.target.checked)}
                                 className="mt-0.5"
                               />
-                              <span>I understand and accept the LankaParts seller service agreement for my first listing.</span>
+                              <span>I understand and accept the LankaParts seller service agreement for this item.</span>
                             </label>
                           )}
                         </div>
