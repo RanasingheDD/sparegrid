@@ -250,7 +250,7 @@ export default function AdminDashboard() {
                           </div>
                           <button onClick={() => deleteProduct(p.id)} className="p-2 text-trust-300 hover:bg-red-50 hover:text-red-500 rounded-lg transition"><Trash2 size={16} /></button>
                         </div>
-                        <div className="mt-auto pt-4 flex gap-2">
+                        <div className="mt-auto flex flex-col gap-2 pt-4 sm:flex-row">
                           <button onClick={() => setSelectedProduct(p)} className="flex-1 bg-trust-50 hover:bg-trust-100 text-trust-600 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition">View</button>
                           {p.status === 'pending' && <button onClick={() => approveProduct(p.id, 'active')} className="flex-1 btn-primary py-2 text-[10px]">Approve</button>}
                           {p.status !== 'pending' && <div className="flex-1 flex justify-end items-center px-2"><StatusBadge status={p.status} /></div>}
@@ -284,13 +284,13 @@ export default function AdminDashboard() {
                               <span className="font-mono text-brand-600 font-bold">{order.id}</span>
                             </div>
                             
-                            <div className="flex gap-4">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                               <div className="flex-1 bg-trust-50 rounded-xl p-3 border border-trust-100 leading-tight">
                                 <p className="text-[10px] uppercase text-trust-400 font-bold mb-1 tracking-wider">Buyer (Ship to)</p>
                                 <p className="text-sm font-display font-bold text-trust-900">{order.buyer?.name || 'Unknown'}</p>
                                 <p className="text-[10px] text-brand-600 font-mono mt-0.5 font-bold">{order.buyer?.phone || 'No phone'}</p>
                               </div>
-                              <ArrowRight className="text-trust-200 self-center" size={16} />
+                              <ArrowRight className="hidden self-center text-trust-200 sm:block" size={16} />
                               <div className="flex-1 bg-white rounded-xl p-3 border border-trust-100 leading-tight">
                                 <p className="text-[10px] uppercase text-trust-400 font-bold mb-1 tracking-wider">Seller (Pickup from)</p>
                                 <p className="text-sm font-display font-bold text-trust-900">{order.seller?.name || 'Unknown'}</p>
@@ -299,14 +299,14 @@ export default function AdminDashboard() {
                             </div>
                           </div>
 
-                          <div className="flex flex-col items-end gap-3 min-w-[200px]">
+                          <div className="flex min-w-0 flex-col items-stretch gap-3 lg:min-w-[200px] lg:items-end">
                             <StatusBadge status={order.delivery_status} />
                             <p className="text-[10px] text-trust-400 font-mono text-right">
                               Created: {new Date(order.created_at).toLocaleString()}
                             </p>
                             
                             {order.delivery_status === 'pending_admin' ? (
-                               <div className="flex gap-2 w-full mt-auto">
+                               <div className="mt-auto flex w-full flex-col gap-2 sm:flex-row">
                                   <button onClick={() => updateOrder(order.id, 'pending')} className="flex-1 btn-primary py-2 text-[10px]">Approve</button>
                                   <button onClick={() => updateOrder(order.id, 'rejected')} className="flex-1 bg-trust-50 hover:bg-red-50 text-trust-500 hover:text-red-600 py-2 rounded-xl text-[10px] font-bold uppercase tracking-wider transition">Reject</button>
                                </div>

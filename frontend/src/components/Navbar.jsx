@@ -33,14 +33,14 @@ export default function Navbar() {
         </div>
       </div>
 
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4">
-        <Link to="/" className="flex items-center gap-4 group min-w-0">
-          <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_14px_32px_rgba(242,85,31,0.18)] transition-transform duration-300 group-hover:scale-105 sm:h-20 sm:w-20">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-4 sm:gap-4">
+        <Link to="/" className="flex min-w-0 items-center gap-3 group sm:gap-4">
+          <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-[0_14px_32px_rgba(242,85,31,0.18)] transition-transform duration-300 group-hover:scale-105 sm:h-20 sm:w-20">
             <img src="/logo.png" alt="LankaParts logo" className="h-full w-full object-cover" />
           </div>
           <div className="min-w-0">
-            <div className="font-display text-3xl font-bold text-trust-900 sm:text-4xl">LankaParts</div>
-            <div className="text-[10px] font-extrabold uppercase tracking-[0.24em] text-brand-600">
+            <div className="font-display text-2xl font-bold text-trust-900 sm:text-4xl">LankaParts</div>
+            <div className="text-[9px] font-extrabold uppercase tracking-[0.2em] text-brand-600 sm:text-[10px] sm:tracking-[0.24em]">
               Parts. Boards. Modules.
             </div>
           </div>
@@ -53,7 +53,7 @@ export default function Navbar() {
           <Link to="/terms" className="transition-colors hover:text-brand-600">Buyer Protection</Link>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {user ? (
             <>
               <div className="hidden sm:flex items-center gap-2 rounded-full border border-brand-100 bg-brand-50 px-3.5 py-2 text-sm font-bold text-brand-700">
@@ -63,10 +63,10 @@ export default function Navbar() {
 
               <Link
                 to={DASHBOARD_ROUTES[user.role] || '/'}
-                className="hidden sm:flex items-center gap-2 rounded-2xl border border-surface-300 bg-white px-4 py-2.5 text-sm font-semibold text-trust-700 shadow-[0_10px_24px_rgba(18,21,33,0.06)] transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:text-brand-700"
+                className="flex items-center gap-2 rounded-2xl border border-surface-300 bg-white px-3 py-2.5 text-xs font-semibold text-trust-700 shadow-[0_10px_24px_rgba(18,21,33,0.06)] transition-all hover:-translate-y-0.5 hover:border-brand-300 hover:text-brand-700 sm:px-4 sm:text-sm"
               >
                 <LayoutDashboard size={16} />
-                Dashboard
+                <span className="hidden sm:inline">Dashboard</span>
               </Link>
 
               <button
@@ -81,12 +81,13 @@ export default function Navbar() {
             <>
               <Link
                 to="/login"
-                className="hidden sm:inline px-3 py-2 text-sm font-semibold text-trust-600 transition-colors hover:text-brand-600"
+                className="inline px-2 py-2 text-sm font-semibold text-trust-600 transition-colors hover:text-brand-600 sm:px-3"
               >
                 Sign In
               </Link>
-              <Link to="/register" className="btn-primary flex items-center gap-2 px-5 py-3">
-                <span>Start Selling</span>
+              <Link to="/register" className="btn-primary flex items-center gap-2 px-4 py-3 sm:px-5">
+                <span className="sm:hidden">Sell</span>
+                <span className="hidden sm:inline">Start Selling</span>
                 <ChevronRight size={15} className="relative z-10" />
               </Link>
             </>

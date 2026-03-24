@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { productsAPI, ordersAPI, authAPI, policyAPI } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import StatusBadge from '../components/StatusBadge'
+import SiteNoticeModal, { NOTICE_KEY } from '../components/SiteNoticeModal'
 import { resolvePlatformCosts } from '../config/platformCosts'
 import toast from 'react-hot-toast'
 import { Plus, Edit, Trash2, Package, ShoppingCart, Truck, ExternalLink, Store, History } from 'lucide-react'
@@ -39,6 +40,7 @@ export default function UserDashboard() {
   const [confirmAction, setConfirmAction] = useState(null)
   const [policies, setPolicies] = useState(null)
   const [agreementAccepted, setAgreementAccepted] = useState(false)
+  const [showPostNotice, setShowPostNotice] = useState(false)
 
   const setPayoutField = (key, value) => {
     setPayoutForm((prev) => ({ ...prev, [key]: value.toUpperCase() }))
@@ -84,9 +86,7 @@ export default function UserDashboard() {
     setEditingId(p.id)
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-
+  const submitListing = async ({ skipNotice = false } = {}) => {
     if (!editingId && (!activeUser?.bank_name || !activeUser?.account_number)) {
       setPayoutForm({
         bank_name: activeUser?.bank_name || '',
@@ -117,6 +117,11 @@ export default function UserDashboard() {
         }
       }
 
+      if (!skipNotice && !sessionStorage.getItem(NOTICE_KEY)) {
+        setShowPostNotice(true)
+        return
+      }
+
       // Normalize images to URLs for backend compatibility (List[str] expected)
       const sanitizedImages = form.images.map(img =>
         typeof img === 'object' ? img.url : img
@@ -144,6 +149,11 @@ export default function UserDashboard() {
     } finally {
       setSaving(false)
     }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    await submitListing()
   }
 
   const handleImageChange = async (e) => {
@@ -262,7 +272,7 @@ export default function UserDashboard() {
             </button>
           </div>
 
-          <div className="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-[2rem] p-6 text-white shadow-xl shadow-emerald-500/20 min-w-[240px] relative overflow-hidden group">
+          <div className="relative w-full overflow-hidden rounded-[2rem] bg-gradient-to-br from-emerald-600 to-teal-700 p-6 text-white shadow-xl shadow-emerald-500/20 group sm:w-auto sm:min-w-[240px]">
             <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700" />
             <p className="text-[10px] uppercase font-bold tracking-widest opacity-80 mb-1">Available Earnings</p>
             <div className="flex items-baseline gap-2">
@@ -324,7 +334,7 @@ export default function UserDashboard() {
 
                 {activeUser.bank_name ? (
                   <div className="space-y-4 bg-trust-50 rounded-3xl p-6 border border-trust-100">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
                         <p className="text-[10px] uppercase font-bold text-trust-400 mb-1">Bank</p>
                         <p className="text-sm font-display font-bold text-trust-900">{activeUser.bank_name}</p>
@@ -345,7 +355,7 @@ export default function UserDashboard() {
                   </div>
                 ) : (
                   <form onSubmit={handleUpdatePayout} className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
                         <label className="block text-[10px] uppercase font-bold text-trust-400 mb-1.5 font-body">Bank Name</label>
                         <input type="text" className="input text-xs uppercase" value={payoutForm.bank_name} onChange={e => setPayoutField('bank_name', e.target.value)} placeholder="E.G. HNB" required />
@@ -460,6 +470,16 @@ export default function UserDashboard() {
               </div>
             </div>
           </div>
+        )}
+
+        {showPostNotice && (
+          <SiteNoticeModal
+            onAcknowledge={() => {
+              setShowPostNotice(false)
+              submitListing({ skipNotice: true })
+            }}
+            onClose={() => setShowPostNotice(false)}
+          />
         )}
 
         {/* Tab Navigation */}
@@ -595,7 +615,7 @@ export default function UserDashboard() {
                         />
 
                         {form.images.length > 0 && (
-                          <div className="flex gap-2 p-3 bg-brand-50/30 rounded-2xl border border-brand-100/50">
+                          <div className="flex flex-wrap gap-2 rounded-2xl border border-brand-100/50 bg-brand-50/30 p-3">
                             {form.images.map((img, i) => {
                               const url = typeof img === 'object' ? img.url : img
                               return (
@@ -604,7 +624,7 @@ export default function UserDashboard() {
                                   <button
                                     type="button"
                                     onClick={() => handleRemoveImage(i)}
-                                    className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                                    className="absolute -top-1 -right-1 z-10 rounded-full bg-red-500 p-0.5 text-white shadow-sm transition-opacity sm:opacity-0 sm:group-hover:opacity-100"
                                   >
                                     <Plus className="rotate-45" size={10} />
                                   </button>
@@ -657,9 +677,9 @@ export default function UserDashboard() {
                             {p.description}
                           </p>
                         )}
-                        <div className="flex gap-2">
+                        <div className="flex flex-col gap-2 sm:flex-row">
                           <button onClick={() => handleEdit(p)} className="flex-1 btn-ghost py-2 text-xs"><Edit size={12} /> Edit</button>
-                          <button onClick={() => handleDelete(p.id)} className="px-3 btn-ghost text-red-400 hover:text-red-600"><Trash2 size={16} /></button>
+                          <button onClick={() => handleDelete(p.id)} className="px-3 btn-ghost text-red-400 hover:text-red-600 sm:w-auto"><Trash2 size={16} /></button>
                         </div>
                       </div>
                     ))}

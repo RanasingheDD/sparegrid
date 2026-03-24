@@ -5,7 +5,6 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 
 import Navbar        from './components/Navbar'
 import Footer        from './components/Footer'
-import SiteNoticeModal from './components/SiteNoticeModal'
 import Home          from './pages/Home'
 import Login         from './pages/Login'
 import Register      from './pages/Register'
@@ -67,7 +66,6 @@ function AppRoutes() {
     <div className="min-h-screen flex flex-col">
       <ScrollToTop />
       <Navbar />
-      <SiteNoticeModal />
       <main className="flex-1">
         <Routes>
           <Route path="/"          element={<Home />} />
