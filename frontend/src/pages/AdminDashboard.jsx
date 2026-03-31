@@ -158,7 +158,17 @@ export default function AdminDashboard() {
   const filteredOrders = useMemo(() => {
     if (!searchTerm) return orders
     const l = searchTerm.toLowerCase()
-    return orders.filter(o => o.id.toLowerCase().includes(l) || o.buyer?.name?.toLowerCase().includes(l) || o.buyer?.phone?.includes(l) || o.seller?.name?.toLowerCase().includes(l) || o.seller?.phone?.includes(l))
+    return orders.filter(o =>
+      o.id.toLowerCase().includes(l) ||
+      o.buyer?.name?.toLowerCase().includes(l) ||
+      o.buyer?.email?.toLowerCase().includes(l) ||
+      o.buyer?.phone?.includes(l) ||
+      o.seller?.name?.toLowerCase().includes(l) ||
+      o.seller?.email?.toLowerCase().includes(l) ||
+      o.seller?.phone?.includes(l) ||
+      o.product?.title?.toLowerCase().includes(l) ||
+      o.product?.model_number?.toLowerCase().includes(l)
+    )
   }, [orders, searchTerm])
 
   const filteredUsers = useMemo(() => {
@@ -322,30 +332,116 @@ export default function AdminDashboard() {
                           </div>
                         </div>
 
-                        {/* Shipping Details in Order */}
-                        <div className="mt-4 p-4 bg-trust-50 rounded-2xl border border-trust-100 space-y-3">
-                           <div className="flex justify-between items-start">
-                              <div className="flex-1">
-                                 <p className="text-[10px] uppercase text-trust-400 font-bold mb-1 tracking-wider">Confirmed Shipping Address</p>
-                                 <p className="text-xs text-trust-700 font-body leading-relaxed font-medium">
-                                    {order.shipping_address || order.buyer?.address || 'Shipping details not provided'}
-                                 </p>
+                        <div className="mt-4 grid gap-4 lg:grid-cols-3">
+                          <div className="rounded-2xl border border-trust-100 bg-trust-50 p-4 space-y-3">
+                            <p className="text-[10px] uppercase text-trust-400 font-bold tracking-wider">Order Details</p>
+                            <div className="grid grid-cols-2 gap-3 text-xs">
+                              <div>
+                                <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Quantity</p>
+                                <p className="font-mono font-bold text-trust-900">{order.quantity || 1} PCS</p>
                               </div>
-                              <div className="text-right">
-                                 <p className="text-[10px] uppercase text-trust-400 font-bold mb-1 tracking-wider">Ordered Item</p>
-                                 <p className="text-xs font-bold text-trust-900 font-mono">{order.quantity || 1} PCS</p>
+                              <div>
+                                <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Shipping</p>
+                                <p className="font-mono font-bold text-trust-900">LKR {Number(order.shipping_cost || 0).toFixed(2)}</p>
                               </div>
-                           </div>
-                           {order.message && (
+                              <div>
+                                <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Total</p>
+                                <p className="font-mono font-bold text-brand-600">LKR {Number(order.total_cost || 0).toFixed(2)}</p>
+                              </div>
+                              <div>
+                                <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Request ID</p>
+                                <p className="font-mono text-trust-700 break-all">{order.request_id || 'Not linked'}</p>
+                              </div>
+                            </div>
+                            <div className="pt-2 border-t border-trust-100">
+                              <p className="text-[10px] uppercase text-trust-400 font-bold mb-1 tracking-wider">Confirmed Shipping Address</p>
+                              <p className="text-xs text-trust-700 font-body leading-relaxed font-medium">
+                                {order.shipping_address || order.buyer?.address || 'Shipping details not provided'}
+                              </p>
+                            </div>
+                            {order.message && (
                               <div className="pt-2 border-t border-trust-100">
-                                 <p className="text-[10px] uppercase text-trust-400 font-bold mb-1 tracking-wider">Customer Message</p>
-                                 <p className="text-xs italic text-trust-600 font-body">"{order.message}"</p>
+                                <p className="text-[10px] uppercase text-trust-400 font-bold mb-1 tracking-wider">Customer Message</p>
+                                <p className="text-xs italic text-trust-600 font-body">"{order.message}"</p>
                               </div>
-                           )}
+                            )}
+                            {order.tracking_notes && (
+                              <div className="pt-2 border-t border-trust-100">
+                                <p className="text-[10px] uppercase text-trust-400 font-bold mb-1 tracking-wider">Admin Notes</p>
+                                <p className="text-xs text-trust-700 font-body">{order.tracking_notes}</p>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="rounded-2xl border border-trust-100 bg-white p-4 space-y-3">
+                            <p className="text-[10px] uppercase text-trust-400 font-bold tracking-wider">Buyer Details</p>
+                            <div className="space-y-2 text-xs text-trust-700">
+                              <div>
+                                <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Name</p>
+                                <p className="font-semibold text-trust-900">{order.buyer?.name || 'Unknown buyer'}</p>
+                              </div>
+                              <div>
+                                <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Email</p>
+                                <p className="break-all">{order.buyer?.email || 'No email'}</p>
+                              </div>
+                              <div>
+                                <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Phone</p>
+                                <p>{order.buyer?.phone || 'No phone'}</p>
+                              </div>
+                              <div>
+                                <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Alt Phone</p>
+                                <p>{order.buyer?.phone2 || 'No alternate phone'}</p>
+                              </div>
+                              <div>
+                                <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Profile Address</p>
+                                <p className="leading-relaxed">{order.buyer?.address || 'No profile address'}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="rounded-2xl border border-trust-100 bg-white p-4 space-y-3">
+                            <p className="text-[10px] uppercase text-trust-400 font-bold tracking-wider">Product Details</p>
+                            <div className="space-y-2 text-xs text-trust-700">
+                              <div>
+                                <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Product Name</p>
+                                <p className="font-semibold text-trust-900">{order.product?.title || 'Unknown product'}</p>
+                              </div>
+                              <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                  <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Model No</p>
+                                  <p>{order.product?.model_number || 'Not set'}</p>
+                                </div>
+                                <div>
+                                  <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Category</p>
+                                  <p>{order.product?.category || 'Not set'}</p>
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                  <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Condition</p>
+                                  <p>{order.product?.condition || 'Not set'}</p>
+                                </div>
+                                <div>
+                                  <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Unit Price</p>
+                                  <p className="font-mono font-bold text-brand-600">LKR {Number(order.product?.price || 0).toFixed(2)}</p>
+                                </div>
+                              </div>
+                              <div>
+                                <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Description</p>
+                                <p className="leading-relaxed">{order.product?.description || 'No product description'}</p>
+                              </div>
+                              <div className="pt-2 border-t border-trust-100">
+                                <p className="text-trust-400 uppercase text-[10px] font-bold tracking-wider mb-1">Seller Details</p>
+                                <p className="font-semibold text-trust-900">{order.seller?.name || 'Unknown seller'}</p>
+                                <p>{order.seller?.email || 'No email'}</p>
+                                <p>{order.seller?.phone || 'No phone'}</p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
-                        <div className="pt-4 border-t border-trust-100 flex justify-between items-center">
-                          <p className="text-[10px] text-trust-400 font-mono font-bold uppercase tracking-widest">Ordered: {order.product?.title || 'Unknown'}</p>
+                        <div className="pt-4 border-t border-trust-100 flex justify-between items-center gap-4">
+                          <p className="text-[10px] text-trust-400 font-mono font-bold uppercase tracking-widest break-all">Ordered: {order.product?.title || 'Unknown'}</p>
                           <button onClick={() => deleteOrder(order.id)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] uppercase font-bold text-trust-300 hover:bg-red-50 hover:text-red-600 transition tracking-tighter">
                             <Trash2 size={12} /> Delete Order
                           </button>

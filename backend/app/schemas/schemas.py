@@ -168,6 +168,7 @@ class RequestStatusUpdate(BaseModel):
 class OrderOut(BaseModel):
     id: str
     product_id: str
+    request_id: Optional[str] = None
     seller_id: str
     buyer_id: str
     delivery_status: DeliveryStatus

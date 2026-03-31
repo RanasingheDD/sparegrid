@@ -5,7 +5,7 @@ from app.policies import MARKETPLACE_POLICIES, calculate_order_total
 
 
 SUPPORT_EMAIL = "support.lankaparts@gmail.com"
-ORDER_ALERT_EMAIL = "lankaparts@gmail.com"
+ORDER_ALERT_EMAIL = "support.lankaparts@gmail.com"
 SITE_URL = "https://lankaparts.live"
 
 

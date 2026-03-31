@@ -215,6 +215,7 @@ def get_all_orders(
         seller_response = db.table("users").select("*").eq("id", o_data.get("seller_id")).execute()
         if seller_response.data:
             s_data = seller_response.data[0]
+            s_data["id"] = str(s_data["id"])
             if s_data.get("role") in ["buyer", "seller"]: s_data["role"] = "user"
             o_data["seller"] = s_data
             
@@ -299,8 +300,15 @@ def update_order_status(
         except Exception:
             pass
 
+    seller_response = db.table("users").select("*").eq("id", o_data.get("seller_id")).execute()
+    if seller_response.data:
+        s_data = seller_response.data[0]
+        s_data["id"] = str(s_data["id"])
+        if s_data.get("role") in ["buyer", "seller"]:
+            s_data["role"] = "user"
+        o_data["seller"] = s_data
+
     if previous_order.get("delivery_status") != DeliveryStatus.rejected.value and data.delivery_status == DeliveryStatus.rejected:
-        seller_response = db.table("users").select("*").eq("id", o_data.get("seller_id")).execute()
         if seller_response.data:
             seller_data = seller_response.data[0]
             failed_count = int(seller_data.get("failed_orders_count") or 0) + 1
