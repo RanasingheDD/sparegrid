@@ -290,6 +290,10 @@ def update_order_status(
                 product_title=o_data.get("product", {}).get("title", "Your order"),
                 item_cost=float(o_data.get("product", {}).get("price") or 0),
                 status=data.delivery_status,
+                quantity=int(o_data.get("quantity") or 1),
+                model_number=o_data.get("product", {}).get("model_number"),
+                shipping_address=o_data.get("shipping_address"),
+                order_message=o_data.get("message"),
                 tracking_notes=o_data.get("tracking_notes"),
             )
         except Exception:

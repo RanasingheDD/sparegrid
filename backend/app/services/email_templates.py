@@ -5,6 +5,7 @@ from app.policies import MARKETPLACE_POLICIES, calculate_order_total
 
 
 SUPPORT_EMAIL = "support.lankaparts@gmail.com"
+ORDER_ALERT_EMAIL = "lankaparts@gmail.com"
 SITE_URL = "https://lankaparts.live"
 
 
@@ -96,9 +97,12 @@ def new_order_admin_email(
     buyer_name: str,
     buyer_email: str,
     product_title: str,
+    model_number: str | None,
     quantity: int,
     shipping_address: str,
     item_cost: float,
+    buyer_phone: str | None = None,
+    order_message: str | None = None,
 ) -> tuple[str, str, str]:
     subject = f"New LankaParts Order: {order_id}"
     text, html = _render_email(
@@ -109,9 +113,12 @@ def new_order_admin_email(
             ("Buyer", buyer_name),
             ("Buyer Email", buyer_email),
             ("Product", product_title),
+            ("Model Number", model_number or "Not provided"),
             ("Item Cost", f"LKR {item_cost:,.2f}"),
             ("Quantity", str(quantity)),
             ("Shipping Address", shipping_address),
+            ("Buyer Phone", buyer_phone or "Not provided"),
+            ("Order Message", order_message or "No message provided"),
         ],
         closing="Please review the order and continue the next fulfillment steps in the admin dashboard.",
     )
@@ -122,9 +129,11 @@ def new_order_buyer_email(
     name: str,
     order_id: str,
     product_title: str,
+    model_number: str | None,
     quantity: int,
     shipping_address: str,
     item_cost: float,
+    order_message: str | None = None,
 ) -> tuple[str, str, str]:
     subject = f"Your LankaParts Order Has Been Received: {order_id}"
     text, html = _render_email(
@@ -133,9 +142,11 @@ def new_order_buyer_email(
         sections=[
             ("Order ID", order_id),
             ("Product", product_title),
+            ("Model Number", model_number or "Not provided"),
             ("Item Cost", f"LKR {item_cost:,.2f}"),
             ("Quantity", str(quantity)),
             ("Shipping Address", shipping_address),
+            ("Order Message", order_message or "No message provided"),
             ("Shipping Charge", f"LKR {MARKETPLACE_POLICIES['buyer_shipping_cost']:,.2f}"),
             ("Total Cost", f"LKR {calculate_order_total(item_cost, quantity):,.2f}"),
         ],
@@ -212,7 +223,12 @@ def order_status_email(
     product_title: str,
     item_cost: float,
     status: DeliveryStatus,
+    quantity: int = 1,
+    model_number: str | None = None,
+    shipping_address: str | None = None,
+    buyer_email: str | None = None,
     tracking_notes: str | None = None,
+    order_message: str | None = None,
 ) -> tuple[str, str, str]:
     status_label = status.value.replace("_", " ").title()
     status_line = {
@@ -235,9 +251,15 @@ def order_status_email(
         sections=[
             ("Order ID", order_id),
             ("Product", product_title),
+            ("Model Number", model_number or "Not provided"),
             ("Item Cost", f"LKR {item_cost:,.2f}"),
+            ("Quantity", str(quantity)),
             ("Shipping Charge", f"LKR {MARKETPLACE_POLICIES['buyer_shipping_cost']:,.2f}"),
-            ("Total Cost", f"LKR {calculate_order_total(item_cost):,.2f}"),
+            ("Total Cost", f"LKR {calculate_order_total(item_cost, quantity):,.2f}"),
+            ("Buyer Name", name),
+            ("Buyer Email", buyer_email or "Not provided"),
+            ("Buyer Address", shipping_address or "Not provided"),
+            ("Order Message", order_message or "No message provided"),
             ("Status", status_label),
             ("Additional Information", additional_note or "No additional notes at this time."),
         ],

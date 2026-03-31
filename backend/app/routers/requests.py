@@ -76,9 +76,12 @@ def create_request(
             buyer_name=current_user.name,
             buyer_email=current_user.email,
             product_title=p_data.get("title", "Unknown product"),
+            model_number=p_data.get("model_number"),
             quantity=new_order.get("quantity") or 1,
             shipping_address=new_order.get("shipping_address") or "Not provided",
             item_cost=float(p_data.get("price") or 0),
+            buyer_phone=current_user.phone,
+            order_message=new_order.get("message"),
         )
     except Exception:
         pass
