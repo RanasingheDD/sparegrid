@@ -179,7 +179,7 @@ export default function TermsAndConditions() {
           <section>
             <h2 className="mb-3 text-lg font-bold text-trust-900">3. භාණ්ඩ ලැයිස්තුගත කිරීම (විකුණුම්කරුවන්)</h2>
             <ul className="list-disc list-outside ml-5 space-y-2">
-              <li>LankaParts විසින් සෑම ලැයිස්තුගත කිරීමකටම LKR 200 ක සේවා ගාස්තුවක් අය කරයි.</li>
+              <li>LankaParts වෙබ් අඩවියේ ලැයිස්තුගත කරන සෑම භාණ්ඩයකටම රු. 200ක සේවා ගාස්තුවක් අය කෙරේ. මෙම ගාස්තුව භාණ්ඩයේ විකුණුම් මිලට එකතු වේ.</li>
               {SINHALA_TERMS.sellerRules.map((item) => (
                 <li key={item}>{item}</li>
               ))}
