@@ -9,6 +9,7 @@ MARKETPLACE_POLICIES = {
     "seller_restriction_after_failed_orders": 2,
     "seller_payment_release_rule": "Sellers are paid only after LankaParts verifies the part.",
     "seller_agreement": [
+        "A non-refundable LankaParts service charge of LKR 200 applies to each approved listing.",
         "Seller must ship the item to LankaParts within 48 hours after order confirmation.",
         "LankaParts releases seller payments only after the part is verified by the LankaParts team.",
         "All seller payment handling is processed on Fridays.",
@@ -21,6 +22,7 @@ MARKETPLACE_POLICIES = {
             "title": "Seller Rules",
             "items": [
                 "Only items priced above LKR 1,000 are accepted on the platform.",
+                "LankaParts charges a service fee of LKR 200 for each listing.",
                 "Listings are reviewed by LankaParts before they go live.",
                 "Seller must ship within 48 hours after LankaParts confirms the order.",
                 #"After 2 failed orders, the seller account can be restricted.",

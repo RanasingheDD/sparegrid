@@ -394,11 +394,14 @@ def get_stats(db: Client = Depends(get_db), _: UserOut = Depends(admin_only)):
     users_count_resp = db.table("users").select("id", count="exact").execute()
     
     pending_count_resp = db.table("orders").select("id", count="exact").eq("delivery_status", DeliveryStatus.pending_admin.value).execute()
+    active_count_resp = db.table("orders").select("id", count="exact").eq("delivery_status", DeliveryStatus.in_delivery.value).execute()
+    delivered_count_resp = db.table("orders").select("id", count="exact").eq("delivery_status", DeliveryStatus.delivered.value).execute()
     
     return {
         "total_orders": orders_count_resp.count if orders_count_resp.count is not None else len(orders_count_resp.data),
         "pending_orders": pending_count_resp.count if pending_count_resp.count is not None else len(pending_count_resp.data),
-        "active_orders": orders_count_resp.count if orders_count_resp.count is not None else len(orders_count_resp.data),
+        "active_orders": active_count_resp.count if active_count_resp.count is not None else len(active_count_resp.data),
+        "delivered_orders": delivered_count_resp.count if delivered_count_resp.count is not None else len(delivered_count_resp.data),
         "total_products": products_count_resp.count if products_count_resp.count is not None else len(products_count_resp.data),
         "total_users": users_count_resp.count if users_count_resp.count is not None else len(users_count_resp.data),
     }

@@ -558,7 +558,7 @@ export default function UserDashboard() {
                           <p className="text-[10px] uppercase font-bold tracking-widest text-brand-700 mb-3">Seller Service Agreement</p>
                           {!editingId && (
                             <p className="text-xs text-trust-700 leading-relaxed">
-                              Review the seller service agreement before posting this item.
+                              Review the seller service agreement before posting this item. A LankaParts service charge of LKR 200 applies to each listing.
                               {' '}
                               <Link to="/terms" className="font-semibold text-brand-700 hover:text-brand-800 underline underline-offset-2">
                                 View terms and conditions

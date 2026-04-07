@@ -197,10 +197,11 @@ export default function AdminDashboard() {
              Comprehensive administrative oversight. Manage the LankaParts ecosystem with precision and security.
           </p>
           {stats && (
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
               <StatCard label="Live Inventory" value={stats.total_products} Icon={Layers} colorClass="bg-indigo-500" />
               <StatCard label="Pending Orders" value={stats.pending_orders} Icon={ShoppingCart} colorClass="bg-brand-500" />
               <StatCard label="In Delivery" value={stats.active_orders} Icon={Truck} colorClass="bg-emerald-500" />
+              <StatCard label="Delivered Orders" value={stats.delivered_orders} Icon={CheckCircle} colorClass="bg-teal-500" />
               <StatCard label="Registered Members" value={stats.total_users} Icon={Users} colorClass="bg-blue-500" />
             </div>
           )}

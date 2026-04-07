@@ -86,6 +86,7 @@ export default function TermsAndConditions() {
           <section>
             <h2 className="mb-3 text-lg font-display font-bold text-trust-900">3. Listing Products (Sellers)</h2>
             <ul className="list-disc list-outside ml-5 space-y-2">
+              <li>LankaParts charges a service fee of LKR 200 for each listing.</li>
               {(policies?.terms_sections?.find(section => section.title === 'Seller Rules')?.items || [
                 'Only items priced above LKR 1,000 are accepted on the platform.',
                 'Listings are reviewed by LankaParts before they go live.',
@@ -115,6 +116,9 @@ export default function TermsAndConditions() {
             <h2 className="mb-3 text-lg font-display font-bold text-trust-900">5. Brokerage &amp; Payment</h2>
             <p>
               LankaParts operates as an intermediary platform. All transactions are facilitated and secured by the LankaParts team. Seller earnings are released only after part verification, and payout handling is processed every {policies?.seller_payout_day || 'Friday'}.
+            </p>
+            <p className="mt-3">
+              LankaParts charges a service fee of LKR 200 for each seller listing.
             </p>
             <p className="mt-3">
               Sellers are responsible for paying the shipping cost to send items to the LankaParts warehouse.
@@ -175,6 +179,7 @@ export default function TermsAndConditions() {
           <section>
             <h2 className="mb-3 text-lg font-bold text-trust-900">3. භාණ්ඩ ලැයිස්තුගත කිරීම (විකුණුම්කරුවන්)</h2>
             <ul className="list-disc list-outside ml-5 space-y-2">
+              <li>LankaParts විසින් සෑම ලැයිස්තුගත කිරීමකටම LKR 200 ක සේවා ගාස්තුවක් අය කරයි.</li>
               {SINHALA_TERMS.sellerRules.map((item) => (
                 <li key={item}>{item}</li>
               ))}
@@ -192,6 +197,9 @@ export default function TermsAndConditions() {
 
           <section>
             <h2 className="mb-3 text-lg font-bold text-trust-900">5. අතරමැදි සේවාව සහ ගෙවීම්</h2>
+            <p className="mt-3 first:mt-0">
+              LankaParts විසින් සෑම ලැයිස්තුගත කිරීමකටම LKR 200 ක සේවා ගාස්තුවක් අය කරයි.
+            </p>
             {SINHALA_TERMS.brokerage.map((item) => (
               <p key={item} className="mt-3 first:mt-0">
                 {item}
