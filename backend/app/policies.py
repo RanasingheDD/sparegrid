@@ -22,7 +22,6 @@ MARKETPLACE_POLICIES = {
             "title": "Seller Rules",
             "items": [
                 "Only items priced above LKR 1,000 are accepted on the platform.",
-                "LankaParts charges a service fee of LKR 200 for each listing.",
                 "Listings are reviewed by LankaParts before they go live.",
                 "Seller must ship within 48 hours after LankaParts confirms the order.",
                 #"After 2 failed orders, the seller account can be restricted.",
