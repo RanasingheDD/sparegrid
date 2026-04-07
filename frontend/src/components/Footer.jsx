@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Mail, Phone, MapPin, ArrowUpRight, ShieldCheck, Truck } from 'lucide-react'
+import { Mail, Phone, MapPin, ArrowUpRight, ShieldCheck, Truck, Wallet } from 'lucide-react'
 
 const LINKS = {
   Discover: [
@@ -42,7 +42,7 @@ export default function Footer() {
               clear pricing, and trusted seller access in one place.
             </p>
 
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
                 <div className="mb-2 flex items-center gap-2 text-sm font-bold text-white">
                   <ShieldCheck size={16} className="text-brand-300" />
@@ -56,6 +56,13 @@ export default function Footer() {
                   Fast delivery
                 </div>
                 <p className="text-xs leading-6 text-white/65">Built for quick parts sourcing and repeat orders.</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div className="mb-2 flex items-center gap-2 text-sm font-bold text-white">
+                  <Wallet size={16} className="text-brand-300" />
+                  Cash on delivery
+                </div>
+                <p className="text-xs leading-6 text-white/65">Cash on delivery is available for eligible orders.</p>
               </div>
             </div>
 

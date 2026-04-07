@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { productsAPI, ordersAPI, policyAPI } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import StatusBadge from '../components/StatusBadge'
-import SiteNoticeModal, { NOTICE_KEY } from '../components/SiteNoticeModal'
 import { resolvePlatformCosts } from '../config/platformCosts'
 import toast from 'react-hot-toast'
 import { ArrowLeft, Wrench, Tag, User, Phone, ShieldCheck } from 'lucide-react'
@@ -19,7 +18,6 @@ export default function ProductDetail() {
   const [activeOrder, setActiveOrder] = useState(null)
   const [activeImageIdx, setActiveImageIdx] = useState(0)
   const [policies, setPolicies] = useState(null)
-  const [showNotice, setShowNotice] = useState(false)
   
   const [reqForm, setReqForm] = useState({ 
     quantity: 1, 
@@ -85,13 +83,7 @@ export default function ProductDetail() {
       navigate('/login')
       return
     }
-
-    if (sessionStorage.getItem(NOTICE_KEY)) {
-      setShowModal(true)
-      return
-    }
-
-    setShowNotice(true)
+    setShowModal(true)
   }
 
   if (loading) return (
@@ -327,16 +319,6 @@ export default function ProductDetail() {
               </form>
            </div>
         </div>
-      )}
-
-      {showNotice && (
-        <SiteNoticeModal
-          onAcknowledge={() => {
-            setShowNotice(false)
-            setShowModal(true)
-          }}
-          onClose={() => setShowNotice(false)}
-        />
       )}
     </div>
   )

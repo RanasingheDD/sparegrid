@@ -1,5 +1,6 @@
 export const PLATFORM_COSTS = {
   minimumItemPrice: 1000,
+  listingServiceCharge: 200,
   buyerShippingCost: 450,
   failedOrderReturnServiceCharge: 480,
   sellerShipWithinHours: 48,
@@ -12,6 +13,7 @@ export function resolvePlatformCosts(policies) {
 
   return {
     minimumItemPrice: safePolicies.minimum_item_price ?? PLATFORM_COSTS.minimumItemPrice,
+    listingServiceCharge: safePolicies.listing_service_charge ?? PLATFORM_COSTS.listingServiceCharge,
     buyerShippingCost: safePolicies.buyer_shipping_cost ?? PLATFORM_COSTS.buyerShippingCost,
     failedOrderReturnServiceCharge:
       safePolicies.failed_order_return_service_charge ?? PLATFORM_COSTS.failedOrderReturnServiceCharge,

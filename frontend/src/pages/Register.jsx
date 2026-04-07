@@ -9,7 +9,7 @@ export default function Register() {
   const navigate = useNavigate()
   const [form, setForm] = useState({
     name: '', email: '', password: '', confirmPassword: '', role: 'user',
-    phone: '', phone2: '', address: ''
+    phone: '', address: ''
   })
   const [agreedToTerms, setAgreedToTerms] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -92,15 +92,9 @@ export default function Register() {
               <input type="email" className="input" placeholder="you@example.com" required {...field('email')} />
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.18em] text-trust-400">Primary Phone</label>
-                <input type="tel" className="input" placeholder="+94 7..." required {...field('phone')} />
-              </div>
-              <div>
-                <label className="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.18em] text-trust-400">Secondary Phone</label>
-                <input type="tel" className="input" placeholder="+94 7..." required {...field('phone2')} />
-              </div>
+            <div>
+              <label className="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.18em] text-trust-400">Phone</label>
+              <input type="tel" className="input" placeholder="+94 7..." required {...field('phone')} />
             </div>
 
             <div>

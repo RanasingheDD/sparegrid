@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { productsAPI, ordersAPI, authAPI, policyAPI } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import StatusBadge from '../components/StatusBadge'
-import SiteNoticeModal, { NOTICE_KEY } from '../components/SiteNoticeModal'
 import { resolvePlatformCosts } from '../config/platformCosts'
 import toast from 'react-hot-toast'
 import { Plus, Edit, Trash2, Package, ShoppingCart, Truck, ExternalLink, Store, History } from 'lucide-react'
@@ -40,7 +39,6 @@ export default function UserDashboard() {
   const [confirmAction, setConfirmAction] = useState(null)
   const [policies, setPolicies] = useState(null)
   const [agreementAccepted, setAgreementAccepted] = useState(false)
-  const [showPostNotice, setShowPostNotice] = useState(false)
 
   const setPayoutField = (key, value) => {
     setPayoutForm((prev) => ({ ...prev, [key]: value.toUpperCase() }))
@@ -86,19 +84,7 @@ export default function UserDashboard() {
     setEditingId(p.id)
   }
 
-  const submitListing = async ({ skipNotice = false } = {}) => {
-    if (!editingId && (!activeUser?.bank_name || !activeUser?.account_number)) {
-      setPayoutForm({
-        bank_name: activeUser?.bank_name || '',
-        bank_branch: activeUser?.bank_branch || '',
-        account_number: activeUser?.account_number || '',
-        account_name: activeUser?.account_name || ''
-      })
-      setShowPayoutModal(true)
-      toast.error('Please complete your payout profile first')
-      return
-    }
-
+  const submitListing = async () => {
     if (form.images.length === 0) {
       toast.error('Please upload at least one image')
       return
@@ -117,11 +103,6 @@ export default function UserDashboard() {
         }
       }
 
-      if (!skipNotice && !sessionStorage.getItem(NOTICE_KEY)) {
-        setShowPostNotice(true)
-        return
-      }
-
       // Normalize images to URLs for backend compatibility (List[str] expected)
       const sanitizedImages = form.images.map(img =>
         typeof img === 'object' ? img.url : img
@@ -130,7 +111,7 @@ export default function UserDashboard() {
       const payload = {
         ...form,
         images: sanitizedImages,
-        price: parseFloat(form.price)
+        price: editingId ? parseFloat(form.price) : parseFloat(form.price) + listingServiceCharge
       }
 
       if (editingId) {
@@ -244,8 +225,10 @@ export default function UserDashboard() {
   const enteredPrice = Number(form.price) || 0
   const costs = resolvePlatformCosts(policies)
   const minimumItemPrice = costs.minimumItemPrice
+  const listingServiceCharge = costs.listingServiceCharge
   const shippingCost = costs.buyerShippingCost
   const failedOrderFee = costs.failedOrderReturnServiceCharge
+  const marketplaceListingPrice = enteredPrice + listingServiceCharge
 
   if (!activeUser) return null
 
@@ -297,7 +280,7 @@ export default function UserDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1">
                   <p className="text-[10px] font-bold text-trust-400 uppercase tracking-widest">Office Address</p>
-                  <p className="text-sm font-body text-trust-700 leading-relaxed">No 72/181, Alaswaththa, Kirimatimulla, Matara</p>
+                  <p className="text-sm font-body text-trust-700 leading-relaxed">NO 72/181, ALASWATHTHA, KIRIMATIMULLA, MATARA</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-[10px] font-bold text-trust-400 uppercase tracking-widest">Logistics Hotline</p>
@@ -472,16 +455,6 @@ export default function UserDashboard() {
           </div>
         )}
 
-        {showPostNotice && (
-          <SiteNoticeModal
-            onAcknowledge={() => {
-              setShowPostNotice(false)
-              submitListing({ skipNotice: true })
-            }}
-            onClose={() => setShowPostNotice(false)}
-          />
-        )}
-
         {/* Tab Navigation */}
         <div className="flex gap-4 mb-8 border-b border-trust-100 overflow-x-auto no-scrollbar">
           {[
@@ -570,9 +543,13 @@ export default function UserDashboard() {
                               <span>Your entered price</span>
                               <span className="font-mono font-bold text-trust-900">LKR {enteredPrice.toLocaleString()}</span>
                             </div>
+                            <div className="flex items-center justify-between text-trust-600">
+                              <span>Service charge</span>
+                              <span className="font-mono font-bold text-trust-900">LKR {listingServiceCharge.toLocaleString()}</span>
+                            </div>
                             <div className="flex items-center justify-between border-t border-brand-100 pt-2">
-                              <span className="text-[10px] uppercase font-bold tracking-widest text-brand-700">Marketplace listing price</span>
-                              <span className="font-mono text-base font-bold text-brand-700">LKR {enteredPrice.toLocaleString()}</span>
+                              <span className="text-[10px] uppercase font-bold tracking-widest text-brand-700">Marketplace Service fee</span>
+                              <span className="font-mono text-base font-bold text-brand-700">LKR {marketplaceListingPrice.toLocaleString()}</span>
                             </div>
                           </div>
                         </div>

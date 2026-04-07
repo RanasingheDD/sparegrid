@@ -1,6 +1,7 @@
 MARKETPLACE_POLICIES = {
     "currency": "LKR",
     "minimum_item_price": 1000,
+    "listing_service_charge": 200,
     "buyer_shipping_cost": 450,
     "failed_order_return_service_charge": 480,
     "seller_ship_within_hours": 48,
@@ -14,25 +15,22 @@ MARKETPLACE_POLICIES = {
         "If a buyer rejects the part after review, LankaParts returns the item and charges delivery cost.", 
         #" After 2 failed orders, the seller account will be restricted.",
     ],
-    "buyer_checkout_notice": "Shipping cost of LKR 450 will be charged on each order.",
+    "buyer_checkout_notice": "Shipping cost of LKR 450 will be charged on each order. Cash on delivery is available.",
     "terms_sections": [
         {
             "title": "Seller Rules",
             "items": [
                 "Only items priced above LKR 1,000 are accepted on the platform.",
                 "Listings are reviewed by LankaParts before they go live.",
-                "The seller must pay the shipping cost when sending an item to the LankaParts warehouse.",
                 "Seller must ship within 48 hours after LankaParts confirms the order.",
-                "Payments are released after LankaParts verifies the part, and payout handling happens on Fridays.",
-                "If a buyer rejects the part, LankaParts sends the item back and charges delivery cost.", 
                 #"After 2 failed orders, the seller account can be restricted.",
             ],
         },
         {
             "title": "Buyer Rules",
             "items": [
-                "Every order includes a shipping charge of LKR 450.",
                 "The total payable amount is item price plus the shipping charge.",
+                "Cash on delivery is available for eligible orders.",
                 "Buyers should provide a correct shipping address before placing the order.",
                 "LankaParts reviews and coordinates delivery for each order.",
             ],
