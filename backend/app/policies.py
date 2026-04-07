@@ -1,7 +1,7 @@
 MARKETPLACE_POLICIES = {
     "currency": "LKR",
     "minimum_item_price": 1000,
-    "listing_service_charge": 200,
+    "listing_service_charge": 250,
     "buyer_shipping_cost": 450,
     "failed_order_return_service_charge": 480,
     "seller_ship_within_hours": 48,
