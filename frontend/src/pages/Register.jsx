@@ -98,7 +98,7 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.18em] text-trust-400">Shipping Address</label>
+              <label className="mb-2 block text-[11px] font-extrabold uppercase tracking-[0.18em] text-trust-400">Address</label>
               <textarea className="input resize-none" rows={3} placeholder="No 123, Galle Road..." required {...field('address')} />
             </div>
 
