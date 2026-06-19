@@ -1,8 +1,8 @@
 export const PLATFORM_COSTS = {
   minimumItemPrice: 1000,
   listingServiceCharge: 250,
-  buyerShippingCost: 450,
-  failedOrderReturnServiceCharge: 480,
+  buyerShippingCost: 500,
+  failedOrderReturnServiceCharge: 500,
   sellerShipWithinHours: 48,
   sellerRestrictionAfterFailedOrders: 2,
   sellerPayoutDay: 'Friday',
